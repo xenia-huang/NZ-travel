@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>紐西蘭南島 2027 行程</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+:root{--ac:#8b6b4f;--ac2:#efe3d6;--bg:#f7f2ec;--card:#fff;--tx:#1c1917;--mut:#78716c;--line:#e7e5e4;--warn:#b45309;--warnbg:#fef3c7}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:"Noto Sans TC",system-ui,sans-serif;background:var(--bg);color:var(--tx);font-size:15px;line-height:1.5;padding-bottom:calc(70px + env(safe-area-inset-bottom))}
+header{position:sticky;top:0;z-index:20;background:var(--bg);padding:calc(10px + env(safe-area-inset-top)) 14px 0}
+.top{display:flex;align-items:center;justify-content:space-between}
+.top h1{font-size:18px;margin:0;font-weight:700}
+.top .cd{font-size:12px;color:var(--mut)}
+.chips{display:flex;gap:6px;overflow-x:auto;padding:10px 0 10px;scrollbar-width:none}
+.chips::-webkit-scrollbar{display:none}
+.chip{flex:0 0 auto;border:1px solid var(--line);background:var(--card);border-radius:12px;padding:5px 9px;text-align:center;min-width:52px;cursor:pointer}
+.chip b{display:block;font-size:13px}.chip span{font-size:11px;color:var(--mut)}
+.chip.on{background:var(--ac);border-color:var(--ac);color:#fff}.chip.on span{color:#fff;opacity:.85}.chip span{color:inherit;opacity:.75}
+.chip.today{box-shadow:0 0 0 2px var(--ac2) inset}
+main{padding:0 14px}
+.hero{background:var(--ac);color:#fff;border-radius:18px;padding:14px 16px;margin-top:4px}
+.hero .d{font-size:12px;opacity:.85}.hero h2{margin:2px 0 6px;font-size:20px}
+.stats{display:flex;gap:14px;flex-wrap:wrap;font-size:13px}
+.stats div{background:rgba(255,255,255,.16);border-radius:10px;padding:4px 9px}
+.gbtn{display:flex;align-items:center;gap:10px;margin-top:12px;background:var(--card);border:1.5px solid var(--ac);border-radius:16px;padding:11px 14px;text-decoration:none;color:var(--tx)}
+.gbtn b{display:block;font-size:15px}.gbtn span{font-size:12px;color:var(--mut)}.gbtn i{font-style:normal;font-size:26px}.gbtn em{margin-left:auto;font-style:normal;color:var(--ac);font-weight:700}
+.gbtn.off{display:none}
+.mapwrap{background:var(--card);border-radius:18px;margin-top:12px;overflow:hidden;border:1px solid var(--line);position:relative}
+.mapwrap svg{display:block;width:100%;height:240px;touch-action:manipulation}
+.mapwrap iframe{display:block;width:100%;height:300px;border:0;border-radius:18px;background:#e0f2fe}
+#bigmap{height:320px}
+.maptog{position:absolute;right:8px;bottom:26px;display:flex;gap:4px;z-index:2;box-shadow:0 1px 4px rgba(0,0,0,.18);border-radius:8px}
+.maptog button{font:inherit;font-size:12px;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:3px 8px}
+.maptog button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.mapnote{position:absolute;left:10px;bottom:6px;font-size:10px;color:var(--mut)}
+.sea{fill:#e0f2fe}.land{fill:#f5f5f4;stroke:#a8a29e;stroke-width:1.2}
+.rt-all{fill:none;stroke:#a8a29e;stroke-width:3;stroke-dasharray:2 6;stroke-linecap:round}
+.rt-day{fill:none;stroke:var(--ac);stroke-width:5;stroke-linecap:round;stroke-linejoin:round}
+.pin circle{fill:var(--ac);stroke:#fff;stroke-width:2.5}.pin text{fill:#fff;font-size:15px;font-weight:700;text-anchor:middle;dominant-baseline:central}
+.pin.stay circle{fill:#7c3aed}
+.lbl{font-size:13px;fill:#57534e;paint-order:stroke;stroke:#fff;stroke-width:4px}
+.sec{font-size:13px;color:var(--mut);margin:16px 2px 6px;font-weight:500}
+.tl{position:relative}
+.it{background:var(--card);border-radius:16px;border:1px solid var(--line);padding:12px 12px 12px 12px;margin-bottom:8px;display:flex;gap:10px}
+.it.next{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac2)}
+.it.done{opacity:.5}
+.ic{flex:0 0 38px;height:38px;border-radius:12px;background:var(--ac2);display:flex;align-items:center;justify-content:center;font-size:19px;position:relative}
+.ic .n{position:absolute;top:-5px;left:-5px;background:var(--ac);color:#fff;font-size:10px;border-radius:9px;min-width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.bd{flex:1;min-width:0}
+.tm{font-size:12px;color:var(--ac);font-weight:700}
+.tt{font-weight:700;font-size:15.5px;margin:1px 0}
+.sub{font-size:13px;color:var(--mut)}
+.badge{display:inline-block;font-size:11px;border-radius:6px;padding:0 6px;margin-left:4px;vertical-align:1px;font-weight:500}
+.b-ok{background:#dcfce7;color:#166534}.b-no{background:var(--warnbg);color:var(--warn)}.b-opt{background:#f1f5f9;color:#475569}
+.more{display:none;margin-top:8px;font-size:13.5px}
+.it.open .more{display:block}
+.nmeta{font-size:11.5px;color:var(--mut);margin-top:3px}
+.nprev{font-size:12.5px;color:var(--ac);margin-top:2px}
+.it.open .nprev{display:none!important}
+.more ul{margin:4px 0;padding-left:18px}.more li{margin:2px 0}
+.more .w{background:var(--warnbg);border-radius:10px;padding:6px 10px;margin-top:6px}
+.more .w ul{padding-left:16px}
+.acts{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}
+.btn{font:inherit;font-size:13px;border-radius:10px;padding:6px 11px;border:1px solid var(--line);background:var(--card);color:var(--tx);text-decoration:none;display:inline-flex;align-items:center;gap:4px;cursor:pointer}
+.btn.pri{background:var(--ac);border-color:var(--ac);color:#fff}
+textarea{width:100%;font:inherit;font-size:13.5px;border:1px solid var(--line);border-radius:10px;padding:7px;margin-top:8px;min-height:54px;background:#fafaf9}
+.drive{display:flex;align-items:center;gap:10px;margin:-2px 0 8px 18px;padding:4px 0 4px 18px;border-left:2px dashed var(--ac);font-size:13px;color:var(--mut)}
+.drive b{color:var(--tx)}
+.drive a{margin-left:auto;font-size:12px;color:var(--ac);text-decoration:none;border:1px solid var(--ac2);border-radius:8px;padding:3px 8px;white-space:nowrap}
+.est{font-size:10.5px;background:#f1f5f9;border-radius:5px;padding:0 4px;margin-left:3px}
+nav.tab{position:fixed;left:0;right:0;bottom:0;background:var(--card);border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom);z-index:30}
+nav.tab button{flex:1;border:0;background:none;font:inherit;font-size:10.5px;color:var(--mut);padding:8px 0 7px}
+nav.tab button i{display:block;font-style:normal;font-size:19px}
+nav.tab button.on{color:var(--ac);font-weight:700}
+.view{display:none}.view.on{display:block}
+.todo{background:var(--card);border-radius:14px;border:1px solid var(--line);padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.todo .dt{font-size:12px;color:var(--warn);font-weight:700;white-space:nowrap}
+.sw{display:flex;gap:12px;flex-wrap:wrap;margin:8px 0}
+.sw button{width:44px;height:44px;border-radius:14px;border:3px solid #fff;box-shadow:0 0 0 1px var(--line);cursor:pointer}
+.sw button.on{box-shadow:0 0 0 3px var(--tx)}
+.card{background:var(--card);border-radius:16px;border:1px solid var(--line);padding:12px 14px;margin-bottom:10px;font-size:14px}
+.card h3{margin:0 0 6px;font-size:15px}
+.mut{color:var(--mut);font-size:12.5px}
+.gpick{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:6px}
+.gcard{font:inherit;border:1px solid var(--line);background:var(--card);border-radius:18px;padding:16px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;color:var(--tx)}
+.gcard i{font-style:normal;font-size:34px}.gcard b{font-size:15px}.gcard span{font-size:12px;color:var(--mut)}
+.ghead{display:flex;align-items:center;gap:10px;margin:6px 0 12px;font-size:14px}.ghead b{font-size:16px}
+.board{display:grid;gap:8px;background:var(--ac2);padding:8px;border-radius:16px;margin:0 auto;max-width:340px;touch-action:none;user-select:none;-webkit-user-select:none}
+.t2{aspect-ratio:1/1;border-radius:10px;display:flex;align-items:center;justify-content:center;font-weight:700}
+.mc{aspect-ratio:1/1;border:0;border-radius:12px;background:var(--ac);font-size:30px;cursor:pointer;transition:transform .15s}
+.mc.up{background:var(--card);transform:rotateY(0)}.mc.ok{opacity:.55}
+.tc{aspect-ratio:1/1;border:0;border-radius:12px;background:var(--card);font-size:44px;font-weight:700;cursor:pointer}
+.gmsg{text-align:center;min-height:22px;margin:10px 0 4px;font-weight:700;color:var(--ac)}
+.pad{display:grid;grid-template-columns:repeat(3,60px);gap:6px;justify-content:center;margin:6px 0 12px}
+.pad button{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;color:var(--tx)}
+.dgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
+.dg{border-radius:14px;padding:8px 10px;cursor:pointer;border:2px solid transparent;font-size:13px}
+.dg b{display:block;font-size:14px}
+.dg.sel{border-color:var(--tx)}
+.crow{display:flex;justify-content:space-between;padding:5px 0;border-bottom:1px solid var(--line);font-size:14px}
+.crow:last-child{border:0}
+.bar{height:8px;border-radius:4px;background:var(--ac);margin-top:3px}
+.pk{display:flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:9px 12px;margin-bottom:6px;font-size:14.5px}
+.pk input{width:20px;height:20px;accent-color:var(--ac)}
+.pk.ok span{text-decoration:line-through;color:var(--mut)}
+.pkh{font-size:12.5px;color:var(--ac);font-weight:700;margin:12px 2px 6px}
+</style>
+</head>
+<body>
+<header>
+  <div class="top"><h1>🇳🇿 南島自駕 2027</h1><div style="display:flex;gap:8px;align-items:center"><div class="cd" id="cd"></div><button id="gear" style="border:0;background:none;font-size:18px;padding:2px">🎨</button></div></div>
+  <div class="chips" id="chips"></div>
+</header>
+
+<main>
+  <section class="view on" id="v-day">
+    <div class="hero" id="hero"></div>
+    <a class="gbtn" id="groute" target="_blank" rel="noopener"></a>
+    <div class="mapwrap">
+      <iframe id="map" title="今天的 Google 地圖路線" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe>
+      <div class="maptog"><button id="mDay" class="on">當天</button><button id="mAll">全程</button></div>
+      
+    </div>
+    <div class="sec" id="tlh">行程 <span id="nstat" style="color:var(--warn);font-weight:400"></span></div>
+    <div class="tl" id="tl"></div>
+  </section>
+
+  <section class="view" id="v-map">
+    <a class="gbtn" id="gtrip" target="_blank" rel="noopener" style="margin-bottom:8px"><i>🗺️</i><div><b>Google Maps 開整趟路線</b><span>11 個住宿／重點站，皇后鎮 → 基督城</span></div><em>›</em></a>
+    <div class="sec">點日期只看那天</div>
+    <div class="mapwrap"><iframe id="bigmap" title="整趟 Google 地圖路線" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+    <div class="dgrid" id="dgrid"></div>
+  </section>
+
+  <section class="view" id="v-cost">
+    <div class="hero" id="costhero"></div>
+        <div class="sec">分類</div>
+    <div class="card" id="costcat"></div>
+    <div class="sec">明細（已付／已訂）</div>
+    <div id="costlist"></div>
+    <div class="mut" style="margin:6px 2px 14px">金額取自行程試算表 $$ 欄；未訂項目（Skyline、酒莊、機場旅館、接送）尚未計入。</div>
+  </section>
+
+  <section class="view" id="v-pack">
+    <div class="sec">打包清單 · 勾選只存在這支手機</div>
+    <div id="packlist"></div>
+    <div class="card" style="display:flex;gap:6px"><input id="packin" placeholder="新增項目…" style="flex:1;font:inherit;border:1px solid var(--line);border-radius:10px;padding:7px"><button class="btn pri" id="packadd">新增</button></div>
+  </section>
+
+  <section class="view" id="v-game"><div id="gamebox"></div></section>
+
+  <section class="view" id="v-todo">
+    <div class="sec">還沒訂的</div>
+    <div id="todos"></div>
+    <div class="sec">有截止日的取消期限</div>
+    <div id="deadlines"></div>
+  </section>
+
+  <section class="view" id="v-set">
+    <div class="sec">主題顏色</div>
+    <div class="card"><div class="sw" id="sw"></div></div>
+    <div class="card">
+      <h3>這個 app 怎麼用</h3>
+      <div class="mut">
+        • 點行程卡片展開：注意事項、你自己的備註<br>
+        • 「導航」會開 Google Maps，從你目前位置出發，車程以 Google 即時路況為準<br>
+        • 🚗 車程是 2026/11/19 在 Google Maps 查的時間（不含停留）；出發當天以導航為準<br>
+        • 行程備註、打勾完成、打包清單都只存在這支手機（瀏覽器本機儲存）<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
+        • 資料來源：Google Sheet「15天行程」（2026/11/18 版本）；試算表改了要記得更新這頁
+      </div>
+    </div>
+  </section>
+</main>
+
+<nav class="tab">
+  <button data-v="day" class="on"><i>🗓️</i>每日行程</button>
+  <button data-v="map"><i>🗺️</i>整趟地圖</button>
+  <button data-v="cost"><i>💰</i>費用</button>
+  <button data-v="todo"><i>⚠️</i>待辦</button>
+  <button data-v="pack"><i>🧳</i>打包</button>
+  <button data-v="game"><i>🎮</i>遊戲</button>
+</nav>
+
+<script>
+const G=q=>'https://www.google.com/maps/search/?api=1&query='+encodeURIComponent(q);
+const DIR=(o,d)=>'https://www.google.com/maps/dir/?api=1'+(o?'&origin='+encodeURIComponent(o):'')+'&destination='+encodeURIComponent(d)+'&travelmode=driving';
+const NAV=d=>'https://www.google.com/maps/dir/?api=1&destination='+encodeURIComponent(d)+'&travelmode=driving';
+
+// type icons
+const IC={fly:'✈️',car:'🚙',stay:'🛏️',act:'⭐',food:'🍽️',walk:'🥾',star:'🌌',spa:'♨️',boat:'🚤',horse:'🐎',sky:'🪂',heli:'🚁',wine:'🍷',cave:'✨',info:'📌',home:'🏠'};
+
+// k: kind; b: booked true / false(未訂) / 'opt'(備案/可選); q: Google Maps 搜尋; u: 既有連結; c: [lat,lng]
+const DAYS=[
+{d:1,date:'2027-02-03',w:'三',title:'出發！台北 → 奧克蘭',region:'桃園',items:[
+ {t:'16:30',k:'car',title:'機場接送',b:false,info:['還沒訂']},
+ {t:'17:45',k:'info',title:'抵達桃園機場 T2'},
+ {t:'20:25',k:'fly',title:'NZ78 台北 → 奧克蘭',sub:'Air NZ · 桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 18:55','行李托運截止 19:25']},
+ {t:'夜',k:'stay',title:'機上過夜'}
+]},
+{d:2,date:'2027-02-04',w:'四',title:'奧克蘭轉機 → 皇后鎮',region:'皇后鎮',items:[
+ {t:'12:05',k:'fly',title:'抵達奧克蘭',sub:'轉國內線航站 D'},
+ {t:'18:45',k:'fly',title:'JQ299 奧克蘭 → 皇后鎮',sub:'18:45 → 20:40',b:true,info:['Jetstar，國內線航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
+ {t:'22:00',k:'car',title:'GO Rentals 取車',sub:'皇后鎮機場',b:true,c:[-45.0211,168.7392],u:'https://www.google.com/maps/search/?api=1&query=GO+Rentals+Queenstown+Airport',info:['Toyota RAV4 AWD Hybrid','2/4 22:00 取 → 2/15 21:00 基督城機場還','分店在航廈外步行 1 分鐘，22:00 夜間自助取車（依 email 指示）'],warn:['兩人都要帶駕照＋國際駕照到場登記','禁開：Skippers Rd、往 Macetown、Ball Hutt Rd、非正式碎石路；車底損傷不保']},
+ {drive:1,min:7,o:'Queenstown Airport',dq:'6 Saint Marks Lane, Queenstown'},
+ {t:'住宿',k:'stay',title:'Airbnb 景觀一房（第 1/3 晚）',sub:'6 Saint Marks Lane',b:true,c:[-45.0275,168.6735],q:'6 Saint Marks Lane, Queenstown',info:['2/4–2/7 共 3 晚，入住 15:00–00:00，退房 10:00 前','抵達前 7 天房東會傳入住資訊'],warn:['入住截止 00:00，航班延誤先傳訊息給房東','2027/1/28 15:00（當地）前取消可部分退款']}
+]},
+{d:3,date:'2027-02-05',w:'五',title:'皇后鎮市區',region:'皇后鎮',items:[
+ {t:'',k:'act',title:'Skyline 纜車 + Luge 溜溜車',b:false,c:[-45.0312,168.6553],u:'https://maps.app.goo.gl/WMbV6AfuPKpYB7sv5'},
+ {drive:1,min:28,o:'Skyline Queenstown',dq:'Gibbston Valley Winery'},
+ {t:'',k:'wine',title:'Gibbston Valley 酒莊',b:false,c:[-45.0127,168.9474],q:'Gibbston Valley Winery',info:['2/9 往瓦納卡途中也會經過，兩天擇一即可']},
+ {t:'',k:'act',title:'（空檔）',b:'opt',info:['備案：Kawarau 吊橋高空彈跳']},
+ {drive:1,min:22,o:'Gibbston Valley Winery',dq:'6 Saint Marks Lane, Queenstown'},
+ {t:'住宿',k:'stay',title:'Airbnb 景觀一房（第 2/3 晚）',b:true,c:[-45.0275,168.6735],q:'6 Saint Marks Lane, Queenstown'}
+]},
+{d:4,date:'2027-02-06',w:'六',title:'騎馬・噴射快艇・泡湯',region:'格林諾奇 / 皇后鎮',items:[
+ {t:'07:30',k:'home',title:'從住處出發',sub:'沿湖公路風景很美',c:[-45.0275,168.6735],info:['沿途：Wilson Bay、Bennetts Bluff Lookout、Bob’s Cove、12 Mile Delta（回程可慢慢停）','備用行程：Moke Lake']},
+ {drive:1,min:65,o:'6 Saint Marks Lane, Queenstown',dq:'2 Swamp Road, Glenorchy'},
+ {t:'09:00',k:'horse',title:'Glenorchy 騎馬',sub:'Lighthorse · The River Wild',b:true,c:[-44.8001737,168.3719072],q:'2 Swamp Road, Glenorchy',info:['9:30 出發，9:00 前一定要報到備馬','地址 2 Swamp Road, Glenorchy','業者提供防水外套、靴子、頭盔；穿長褲＋襪子'],warn:['遲到就不能騎、不退款','騎乘時不能背包，手機放拉鍊口袋','河流穿越視天氣，天候差可能取消','取消：30 天前免費（約 1/7 前）；48–24 小時收 50%；24 小時內不退']},
+ {t:'午',k:'food',title:'Glenorchy 小鎮午餐',sub:'紅色船屋・Glenorchy Lagoon 木棧道',c:[-44.851,168.387],q:'Glenorchy Lagoon Walkway'},
+ {drive:1,min:57,o:'Glenorchy Lagoon Walkway',dq:'Shotover Jet, 3 Arthurs Point Road, Queenstown'},
+ {t:'16:00',k:'boat',title:'Shotover Jet 噴射快艇',b:true,c:[-44.9895,168.6714],q:'Shotover Jet 3 Arthurs Point Road Queenstown',info:['2 位成人','15:30 前到河邊基地報到：3 Arthurs Point Road','坐船約 25 分鐘','帶太陽眼鏡、防曬、保暖外套'],warn:['只能用頭戴式相機，其他相機不能上船','出發前 24 小時內取消收 100%']},
+ {drive:1,min:3,o:'Shotover Jet Queenstown',dq:'Onsen Hot Pools, 160 Arthurs Point Rd'},
+ {t:'20:20',k:'spa',title:'Onsen Hot Pools 泡湯',sub:'20:45–21:45，邊泡邊看日落（約 21:09）',b:true,c:[-44.9822,168.6743],u:'https://maps.app.goo.gl/Hoj4JHZykryxz63DA',info:['Original Onsen – soak only','地址 160 Arthurs Point Rd','免費停車位有限，停車場走到櫃台約 100m'],warn:['20:30 前要到櫃台報到，晚到會縮短時間','取消／改期需 24 小時前，否則收 100%']},
+ {drive:1,min:15,o:'Onsen Hot Pools Arthurs Point',dq:'6 Saint Marks Lane, Queenstown'},
+ {t:'住宿',k:'stay',title:'Airbnb 景觀一房（第 3/3 晚）',b:true,c:[-45.0275,168.6735],q:'6 Saint Marks Lane, Queenstown',warn:['2/7 10:00 前退房']}
+]},
+{d:5,date:'2027-02-07',w:'日',title:'往 Te Anau・螢火蟲洞',region:'Te Anau / Manapōuri',items:[
+ {t:'10:00',k:'home',title:'皇后鎮退房出發',c:[-45.0275,168.6735]},
+ {drive:1,min:130,o:'6 Saint Marks Lane, Queenstown',dq:'RealNZ Visitor Centre, 85 Lakefront Drive, Te Anau'},
+ {t:'15:15',k:'cave',title:'Te Anau 螢火蟲洞',sub:'RealNZ · 15:15–17:30',b:true,c:[-45.4146,167.7178],q:'RealNZ Visitor Centre 85 Lakefront Drive Te Anau',info:['14:45 前到 RealNZ 遊客中心報到：85 Lakefront Drive','含遊湖船來回、洞穴步道、小船；已付款','帶防滑鞋、防水外套、毛衣、防蚊液'],warn:['14:45 前報到','洞內禁止拍照錄影','票券存手機錢包或印出，到場要出示','只能刷卡；不供餐（只有茶和咖啡）','2/6 15:15 後取消不退']},
+ {drive:1,min:17,o:'85 Lakefront Drive, Te Anau',dq:'37D Waiau Street, Manapouri'},
+ {t:'住宿',k:'stay',title:'Manapouri Cottage 1',sub:'37D Waiau Street, Manapōuri',b:true,c:[-45.564,167.611],q:'37D Waiau Street, Manapouri',info:['入住 15:00 起，退房 10:00 前','自助入住（取鑰方式見 email）'],warn:['1/23 23:59 前免費取消，之後收 NZD 240']}
+]},
+{d:6,date:'2027-02-08',w:'一',title:'米佛峽灣',region:'Fiordland',items:[
+ {t:'07:15',k:'home',title:'Manapōuri 出發',sub:'路過 Te Anau 一定要加油',c:[-45.564,167.611],warn:['Te Anau 到 Milford 沒有手機訊號','出發前查 Milford Road 路況（NZTA）']},
+ {drive:1,min:128,o:'37D Waiau Street, Manapouri',dq:'Milford Sound Visitor Terminal'},
+ {t:'10:20',k:'boat',title:'米佛峽灣小船遊',sub:'Boutique Small Boat Cruise · 10:45–12:30',b:true,c:[-44.671,167.926],q:'Milford Sound Visitor Terminal',info:['10:20 前到 Visitor Terminal 內 Cruise Milford 櫃台報到','停車約 NZ$10/小時、只能刷卡（第三方資料）','船上不賣食物，可自帶；帶防水外套'],warn:['10:20 前報到','24 小時內取消可能不退；天候或封路可改期']},
+ {t:'',k:'walk',title:'回程沿 Milford Road 停留',sub:'Mirror Lakes・Eglinton Valley・The Chasm',b:'opt',q:'Mirror Lakes Milford Road'},
+ {drive:1,min:106,o:'Milford Sound Visitor Terminal',dq:'236 Milford Road, Te Anau'},
+ {t:'住宿',k:'stay',title:'Annies on Milford',sub:'236 Milford Road, Te Anau',b:true,c:[-45.405,167.722],q:'236 Milford Road, Te Anau',info:['入住 14:00–20:00，退房 08:00–10:00','入住細節見 email'],warn:['入住只到 20:00！晚到先聯絡民宿','不可退款、不可改日期']}
+]},
+{d:7,date:'2027-02-09',w:'二',title:'Te Anau → 瓦納卡',region:'瓦納卡',items:[
+ {t:'',k:'info',title:'米佛峽灣備用日',sub:'若 2/8 天候取消，今天改去',b:'opt'},
+ {t:'10:00',k:'home',title:'Te Anau 退房出發',c:[-45.405,167.722]},
+ {drive:1,min:139,o:'236 Milford Road, Te Anau',dq:'Gibbston Valley Winery'},
+ {t:'',k:'wine',title:'Gibbston Valley 酒莊（順路）',b:false,c:[-45.0127,168.9474],q:'Gibbston Valley Winery',info:['和 2/5、Rippon 酒莊擇一']},
+ {drive:1,min:58,o:'Gibbston Valley Winery',dq:'20 Alison Avenue, Albert Town',note:'經 Cardrona 山路'},
+ {t:'住宿',k:'stay',title:'Wanaka Riverside Townhouse',sub:'20 Alison Ave, Albert Town',b:true,c:[-44.682,169.193],q:'20 Alison Avenue, Albert Town',info:['2/9–2/11 共 2 晚，入住 15:00 起，退房 10:00 前','自助入住（取鑰方式見 email）'],warn:['1/9 23:59 前免費取消，之後收 NZD 519.20']}
+]},
+{d:8,date:'2027-02-10',w:'三',title:'瓦納卡跳傘',region:'瓦納卡',items:[
+ {t:'06:30',k:'info',title:'打電話確認天氣',sub:'Skydive Wanaka（電話見 email）',warn:['天候取消就改 2/11 早上備案']},
+ {drive:1,min:12,o:'20 Alison Avenue, Albert Town',dq:'14 Mustang Lane, Wanaka'},
+ {t:'07:10',k:'sky',title:'15,000ft 雙人跳傘',sub:'7:30 出發，約 10:30 結束',b:true,c:[-44.7222,169.2456],u:'https://maps.app.goo.gl/YfAYLccynskg2cjz8',info:['7:10 報到：14 Mustang Lane（瓦納卡機場）','穿舒適衣服＋包鞋；可戴眼鏡','跳傘服、護目鏡、手套業者提供'],warn:['不能帶相機／GoPro','2/9 7:30 後取消收全額']},
+ {t:'下午',k:'wine',title:'Rippon 酒莊 或 步槍體驗',b:false,c:[-44.7038,169.0905],u:'https://maps.app.goo.gl/kdtqHyNYZbN1QXkS7',info:['和 Gibbston Valley 酒莊擇一']},
+ {t:'傍晚',k:'spa',title:'The Secret Sauna Cardrona',b:'opt',q:'The Secret Sauna Cardrona',u:'https://maps.app.goo.gl/n9Ag84RkaoLgbAgK7',info:['目前暫不安排']},
+ {t:'住宿',k:'stay',title:'Wanaka Riverside Townhouse（第 2 晚）',b:true,c:[-44.682,169.193],q:'20 Alison Avenue, Albert Town',warn:['2/11 10:00 前退房']}
+]},
+{d:9,date:'2027-02-11',w:'四',title:'翻越 Haast Pass 到西岸',region:'Franz Josef',items:[
+ {t:'上午',k:'sky',title:'跳傘備案',sub:'只有 2/10 被取消才跳',b:'opt',c:[-44.7222,169.2456]},
+ {t:'10:00',k:'home',title:'退房出發往 Franz Josef',c:[-44.682,169.193],warn:['入住只到 20:00，最晚 14:30 前出發','Haast 一帶加油站少，瓦納卡先加滿']},
+ {drive:1,min:243,o:'20 Alison Avenue, Albert Town',dq:'Franz Josef Oasis Hotel',note:'行程表抓 5 小時（含休息）'},
+ {t:'住宿',k:'stay',title:'Franz Josef Oasis Hotel',sub:'含早餐',b:true,c:[-43.388,170.182],q:'Franz Josef Oasis Hotel',info:['入住 15:00–20:00，退房 07:00–10:00','入住細節見 email'],warn:['入住只到 20:00！','2/8 23:59 前免費取消，之後收全額']}
+]},
+{d:10,date:'2027-02-12',w:'五',title:'直升機冰川健行',region:'Franz Josef',items:[
+ {t:'10:15',k:'heli',title:'Franz Josef 冰川直升機健行',sub:'10:30 出發，約 14:30 結束',b:true,c:[-43.387,170.183],q:'Franz Josef Glacier Guides 63 Cron Street',info:['10:15 報到：63 Cron Street','要帶：3–4 件保暖上衣、快乾褲、太陽眼鏡（必戴）、水、點心','背包可寄放在 Glacier Base'],warn:['出發前 24 小時要完成線上報到（waiver），連結在確認信','不能穿牛仔褲、滑雪褲；不能帶自拍棒、空拍機','天候差或不滿 4 人可能取消 → 改 2/13 早上','2/11 10:15 後改期／取消收全額']},
+ {t:'下午',k:'walk',title:'Lake Matheson／冰川步道／溫泉',b:'opt',c:[-43.438,169.964],q:'Lake Matheson'},
+ {drive:1,min:4,o:'Franz Josef Glacier Guides, 63 Cron Street',dq:'Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare'},
+ {t:'住宿',k:'stay',title:'Gibbs Guesthouse',sub:'2824 Franz Josef Hwy, Tatare',b:true,c:[-43.372,170.19],u:'https://maps.app.goo.gl/DXRNiexQJ9yKELFH9',info:['入住 15:00 起，退房 11:00 前','自助入住（取鑰方式見 email）'],warn:['2/9 23:59 前免費取消，之後收全額']}
+]},
+{d:11,date:'2027-02-13',w:'六',title:'長途回東岸・Tekapo 觀星',region:'Tekapo',items:[
+ {t:'上午',k:'heli',title:'冰川健行備案',sub:'只有 2/12 被取消才做',b:'opt',c:[-43.387,170.183]},
+ {t:'',k:'home',title:'出發：西岸 → Haast Pass → Simons Hill',c:[-43.372,170.19],warn:['車程約 6 小時，避免天黑開 Haast Pass','若早上做冰川備案，下午出發會很趕']},
+ {drive:1,min:352,o:'Gibbs Guesthouse Tatare',dq:'2963 Tekapo-Twizel Road, Simons Pass'},
+ {t:'住宿',k:'stay',title:'Simons Hill（暗空保護區）',sub:'有熱水浴缸',b:true,c:[-44.13,170.29],q:'2963 Tekapo-Twizel Road, Simons Pass',info:['入住 15:00 起，退房 10:00 前','入住細節見 email'],warn:['2/5 23:59 前免費取消，之後收全額']},
+ {drive:1,min:22,o:'2963 Tekapo-Twizel Road, Simons Pass',dq:'Lake Tekapo',note:'集合點看業者 email'},
+ {t:'22:30',k:'star',title:'變色龍觀星（中文團）',sub:'約 90 分鐘，00:00 結束',b:true,c:[-44.0047,170.4772],q:'Lake Tekapo',info:['憑證在信件附件／Klook App','集合地點業者另寄 email；中文團和英文團集合點不同、沒有接駁'],warn:['天氣不好改 2/14 晚上','回 Simons Hill 約 30 分鐘夜車，注意動物']}
+]},
+{d:12,date:'2027-02-14',w:'日',title:'庫克山健行・鮭魚',region:'Mt Cook / Pukaki',items:[
+ {t:'早上',k:'home',title:'Simons Hill 退房',c:[-44.13,170.29],warn:['10:00 前退房']},
+ {drive:1,min:60,o:'2963 Tekapo-Twizel Road, Simons Pass',dq:'Hooker Valley Track car park'},
+ {t:'',k:'walk',title:'Hooker Valley Track',sub:'來回約 3 小時，庫克山步道很多可選',c:[-43.718,170.093],q:'Hooker Valley Track car park'},
+ {drive:1,min:51,o:'Hooker Valley Track car park',dq:'High Country Salmon Twizel'},
+ {t:'',k:'food',title:'High Country Salmon',sub:'Twizel，鮭魚生魚片',c:[-44.224,170.125],u:'https://maps.app.goo.gl/iGH865JBpiJ4vHbc9'},
+ {t:'晚上',k:'star',title:'觀星備案',sub:'只有 2/13 被取消才去',b:'opt'},
+ {t:'住宿',k:'stay',title:'Omahau Down',sub:'Lake Pukaki',b:true,c:[-44.235,170.105],q:'Omahau Down 5744 Tekapo-Twizel Road',info:['入住 15:00–23:00，退房 08:00–10:00','入住細節見 email'],warn:['2/6 23:59 前免費取消，之後收全額']}
+]},
+{d:13,date:'2027-02-15',w:'一',title:'Tekapo → 基督城・還車',region:'基督城',items:[
+ {t:'',k:'home',title:'Omahau Down 退房',c:[-44.235,170.105]},
+ {drive:1,min:46,o:'Omahau Down, Lake Pukaki',dq:'Astro Cafe Mount John'},
+ {t:'09:00',k:'food',title:'Astro Café（Mt John 山頂）',sub:'9:00–15:00，廚房 14:00 收',c:[-43.9853,170.465],u:'https://maps.app.goo.gl/fVNAHbNRh3HEpBrMA',info:['上山道路費 $14／車']},
+ {drive:1,min:116,o:'Astro Cafe Mount John',dq:'Cleavers Corner Gastro Pub Ashburton'},
+ {t:'晚餐',k:'food',title:'Cleavers Corner Gastro Pub',sub:'Ashburton',c:[-43.905,171.747],u:'https://maps.app.goo.gl/m9mDBsrLsmD92Rzo9'},
+ {drive:1,min:64,o:'Cleavers Corner Gastro Pub Ashburton',dq:'C1 Espresso Christchurch'},
+ {t:'',k:'food',title:'C1 Espresso',sub:'週一營業到 21:00',c:[-43.534,172.638],u:'https://maps.app.goo.gl/JrU7QgMSYH21FjjG7'},
+ {drive:1,min:20,o:'C1 Espresso Christchurch',dq:'GO Rentals, 155 Orchard Road, Christchurch'},
+ {t:'21:00',k:'car',title:'GO Rentals 還車',sub:'155 Orchard Road',b:true,c:[-43.49,172.545],q:'GO Rentals 155 Orchard Road Christchurch',info:['夜間還車（已付），依 GO Rentals email 指示','已改期 2/16 07:00 → 2/15 21:00（退款處理中）'],warn:['還車前加滿油','晚上沒接駁：走約 2km／20 分鐘或叫車到機場旅館','會晚到先聯絡 GO Rentals（電話見 email）；逾時可能加收一天＋NZD 250']},
+ {t:'住宿',k:'stay',title:'基督城機場旅館',sub:'選步行可到航廈的',b:false,c:[-43.489,172.532]}
+]},
+{d:14,date:'2027-02-16',w:'二',title:'基督城 → 奧克蘭',region:'奧克蘭',items:[
+ {t:'08:55',k:'walk',title:'步行到基督城機場航廈',sub:'建議 8:55 前到',c:[-43.489,172.532]},
+ {t:'09:55',k:'fly',title:'JQ232 基督城 → 奧克蘭',sub:'09:55 → 11:15',b:true,info:['Jetstar，航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
+ {t:'住宿',k:'stay',title:'奧克蘭機場附近',b:false,info:['2/17 12:20 起飛，住機場附近']}
+]},
+{d:15,date:'2027-02-17',w:'三',title:'回家',region:'奧克蘭 → 台北',items:[
+ {t:'09:30',k:'info',title:'抵達奧克蘭國際航廈'},
+ {t:'12:20',k:'fly',title:'NZ77 奧克蘭 → 台北',sub:'18:35 抵達桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 10:50','行李托運截止 11:20']},
+ {t:'18:35',k:'home',title:'抵達桃機，回家！'},
+ {t:'',k:'car',title:'機場接送',b:false}
+]}
+];
+
+const ROUTES={
+2:['Queenstown Airport','6 Saint Marks Lane, Queenstown'],
+3:['6 Saint Marks Lane, Queenstown','Skyline Queenstown','Gibbston Valley Winery','6 Saint Marks Lane, Queenstown'],
+4:['6 Saint Marks Lane, Queenstown','2 Swamp Road, Glenorchy','Glenorchy Lagoon Walkway','Shotover Jet, 3 Arthurs Point Road','Onsen Hot Pools, 160 Arthurs Point Rd','6 Saint Marks Lane, Queenstown'],
+5:['6 Saint Marks Lane, Queenstown','RealNZ Visitor Centre, 85 Lakefront Drive, Te Anau','37D Waiau Street, Manapouri'],
+6:['37D Waiau Street, Manapouri','Milford Sound Visitor Terminal','236 Milford Road, Te Anau'],
+7:['236 Milford Road, Te Anau','Gibbston Valley Winery','20 Alison Avenue, Albert Town'],
+8:['20 Alison Avenue, Albert Town','14 Mustang Lane, Wanaka','Rippon Vineyard Wanaka','20 Alison Avenue, Albert Town'],
+9:['20 Alison Avenue, Albert Town','Franz Josef Oasis Hotel'],
+10:['Franz Josef Oasis Hotel','Franz Josef Glacier Guides, 63 Cron Street','Lake Matheson','Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare'],
+11:['Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare','Haast Pass','2963 Tekapo-Twizel Road, Simons Pass','Lake Tekapo'],
+12:['2963 Tekapo-Twizel Road, Simons Pass','Hooker Valley Track','High Country Salmon Twizel','Omahau Down, Lake Pukaki'],
+13:['Omahau Down, Lake Pukaki','Astro Cafe Mount John','Cleavers Corner Gastro Pub Ashburton','C1 Espresso Christchurch','GO Rentals, 155 Orchard Road, Christchurch'],
+14:['Christchurch Airport']
+};
+const TRIP=['Queenstown Airport','6 Saint Marks Lane, Queenstown','37D Waiau Street, Manapouri','Milford Sound Visitor Terminal','236 Milford Road, Te Anau','20 Alison Avenue, Albert Town','Franz Josef Oasis Hotel','2963 Tekapo-Twizel Road, Simons Pass','Omahau Down, Lake Pukaki','Lake Tekapo','GO Rentals, 155 Orchard Road, Christchurch'];
+const GR=a=>a.length<2?G(a[0]):'https://www.google.com/maps/dir/?api=1&origin='+encodeURIComponent(a[0])+'&destination='+encodeURIComponent(a[a.length-1])+(a.length>2?'&waypoints='+a.slice(1,-1).map(encodeURIComponent).join('%7C'):'')+'&travelmode=driving';
+const DEADLINES=[
+ ['2027-01-07','Glenorchy 騎馬','約此日前免費取消（以信件為準）'],
+ ['2027-01-09','Wanaka Riverside','23:59 前免費取消'],
+ ['2027-01-23','Manapouri Cottage','23:59 前免費取消'],
+ ['2027-01-28','皇后鎮 Airbnb','15:00 前取消部分退款'],
+ ['2027-02-05','Simons Hill','23:59 前免費取消'],
+ ['2027-02-06','Omahau Down','23:59 前免費取消'],
+ ['2027-02-08','Franz Josef Oasis','23:59 前免費取消'],
+ ['2027-02-09','Gibbs Guesthouse','23:59 前免費取消'],
+ ['2027-02-09','跳傘','7:30 前免費取消'],
+ ['2027-02-11','冰川直升機','10:15 前免費改期／取消；出發前 24h 完成線上 waiver'],
+];
+
+// ---------- state ----------
+const LS={get(k,d){try{const v=localStorage.getItem('nz27_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nz27_'+k,JSON.stringify(v))}catch(e){}}};
+let done=LS.get('done',{});
+function ikey(D,it){let h=0;for(const ch of it.title)h=(h*31+ch.codePointAt(0))>>>0;return 'd'+D.d+'-'+h.toString(36)}
+// ---------- personal notes (localStorage, this device only) ----------
+let SN=LS.get('notes',{});
+const noteTimers={};
+function initShared(){refreshNotes()}
+function noteMeta(k){const n=SN[k];if(!n||!n.text)return '';const d=n.at?new Date(n.at):null;
+ return `📝 存在這支手機${d?' · '+(d.getMonth()+1)+'/'+d.getDate()+' '+String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'):''}`}
+function refreshNotes(){
+ document.querySelectorAll('textarea[data-n]').forEach(t=>{const k=t.dataset.n;if(document.activeElement!==t&&!noteTimers[k])t.value=(SN[k]&&SN[k].text)||'';t.disabled=false;t.placeholder='我的備註（只存在這支手機）';});
+ document.querySelectorAll('[data-meta]').forEach(m=>{m.textContent=noteMeta(m.dataset.meta)});
+ document.querySelectorAll('[data-prev]').forEach(m=>{const n=SN[m.dataset.prev];m.textContent=n&&n.text?'📝 '+n.text.split('\n')[0].slice(0,40):'';m.style.display=n&&n.text?'':'none'});
+ const st=document.getElementById('nstat');if(st)st.textContent='';
+}
+function saveNote(k,v){clearTimeout(noteTimers[k]);noteTimers[k]=setTimeout(()=>{delete noteTimers[k];
+ if(v.trim())SN[k]={text:v,at:Date.now()};else delete SN[k];LS.set('notes',SN);
+ const st=document.querySelector(`[data-meta="${k}"]`);if(st)st.textContent=noteMeta(k)||'已刪除';
+ const p=document.querySelector(`[data-prev="${k}"]`);if(p){const n=SN[k];p.textContent=n?'📝 '+n.text.split('\n')[0].slice(0,40):'';p.style.display=n?'':'none'}},500)}
+const COLORS=[['#8b6b4f','#efe3d6'],['#0f766e','#ccfbf1'],['#1d4ed8','#dbeafe'],['#be123c','#ffe4e6'],['#7c3aed','#ede9fe'],['#c2410c','#ffedd5'],['#15803d','#dcfce7'],['#334155','#e2e8f0'],];
+function setColor(i){const c=COLORS[i];document.documentElement.style.setProperty('--ac',c[0]);document.documentElement.style.setProperty('--ac2',c[1]);LS.set('color',i);renderSw()}
+
+// NZ time now
+function nzNow(){const s=new Date().toLocaleString('en-CA',{timeZone:'Pacific/Auckland',hour12:false});const [d,t]=s.split(', ');return {date:d,hm:t.slice(0,5)}}
+function todayIdx(){const n=nzNow();const tw=new Date().toLocaleDateString('en-CA',{timeZone:'Asia/Taipei'});
+ let i=DAYS.findIndex(x=>x.date===n.date);if(i<0)i=DAYS.findIndex(x=>x.date===tw);return i}
+const fmtMin=m=>m<60?m+' 分':(Math.floor(m/60)+' 小時'+(m%60?' '+m%60+' 分':''));
+
+let cur=0,mapAll=false;
+function renderChips(){const ti=todayIdx();document.getElementById('chips').innerHTML=DAYS.map((x,i)=>`<div class="chip ${i===cur?'on':''} ${i===ti?'today':''}" data-i="${i}" style="${i===cur?'':`background:color-mix(in srgb,var(--ac) ${8+i*4}%,#fff);${i>9?'color:#fff':''}`}"><b>D${x.d}</b><span>${+x.date.slice(5,7)}/${+x.date.slice(8)}（${x.w}）</span></div>`).join('');
+ document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>go(+c.dataset.i));
+ const on=document.querySelector('.chip.on');on&&on.scrollIntoView({inline:'center',block:'nearest'})}
+
+function go(i){cur=i;try{history.replaceState(null,'','#day'+DAYS[i].d)}catch(e){location.hash='day'+DAYS[i].d}render();window.scrollTo({top:0})}
+
+function navUrl(it){return it.u&&it.u.startsWith('https://maps.app')?it.u:(it.q?NAV(it.q):(it.u||''))}
+
+function render(){
+ renderChips();const D=DAYS[cur];const drives=D.items.filter(x=>x.drive);
+ const mn=drives.reduce((a,b)=>a+b.min,0);
+ const stay=D.items.filter(x=>x.k==='stay').pop();
+ const ti=todayIdx();const tag=cur===ti?'今天 · ':'';
+ document.getElementById('hero').innerHTML=`<div class="d">${tag}DAY ${D.d} · ${+D.date.slice(5,7)}月${+D.date.slice(8)}日（${D.w}）</div><h2>${D.title}</h2><div class="stats">${mn?`<div>🚗 開車共 ${fmtMin(mn)}</div>`:''}${stay?`<div>🛏️ ${stay.title.replace(/（.*?）/,'')}</div>`:''}</div>`;
+ // next item
+ let nextKey=null;if(cur===ti){const hm=nzNow().hm;const c=D.items.find(x=>!x.drive&&/^\d\d:\d\d/.test(x.t)&&x.t>=hm);if(c)nextKey=c}
+ let n=0;const html=D.items.map((it,j)=>{
+  if(it.drive){return `<div class="drive">🚗 <span><b>${fmtMin(it.min)}</b><span class="est">Google</span>${it.note?'<br><span style="font-size:11.5px">'+it.note+'</span>':''}</span><a href="${DIR(it.o,it.dq)}" target="_blank" rel="noopener">路線 ›</a></div>`}
+  const key=ikey(D,it);const num=it.c?++n:'';
+  const badge=it.b===true?'<span class="badge b-ok">已訂</span>':it.b===false?'<span class="badge b-no">未訂</span>':it.b==='opt'?'<span class="badge b-opt">備案/可選</span>':'';
+  const nu=navUrl(it);
+  return `<div class="it ${done[key]?'done':''} ${it===nextKey?'next':''}" data-k="${key}">
+   <div class="ic">${IC[it.k]||'📍'}${num?`<span class="n">${num}</span>`:''}</div>
+   <div class="bd"><div class="tm">${it===nextKey?'▶ 下一站 · ':''}${it.t||''}</div>
+   <div class="tt">${it.title}${badge}</div>${it.sub?`<div class="sub">${it.sub}</div>`:''}<div class="nprev" data-prev="${key}"></div>
+   ${(it.warn&&it.warn.length&&!done[key])?`<div class="sub" style="color:var(--warn)">⚠️ ${it.warn[0]}${it.warn.length>1?` 等 ${it.warn.length} 項`:''}</div>`:''}
+   <div class="more">${it.info?'<ul>'+it.info.map(x=>'<li>'+x+'</li>').join('')+'</ul>':''}
+    ${it.warn?'<div class="w"><b>注意</b><ul>'+it.warn.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':''}
+    <textarea data-n="${key}"></textarea><div class="nmeta" data-meta="${key}"></div></div>
+   <div class="acts">${nu?`<a class="btn pri" href="${nu}" target="_blank" rel="noopener">🧭 導航</a>`:''}${it.q&&it.u&&!it.u.startsWith('https://maps.app')?`<a class="btn" href="${G(it.q)}" target="_blank" rel="noopener">地圖</a>`:''}<button class="btn" data-d="${key}">${done[key]?'↺ 未完成':'✓ 完成'}</button></div>
+   </div></div>`}).join('');
+ document.getElementById('tl').innerHTML=html;
+ document.querySelectorAll('.it').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('a,button,textarea'))return;el.classList.toggle('open')}));
+ document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const k=b.dataset.d;done[k]=!done[k];LS.set('done',done);render()});
+ document.querySelectorAll('textarea[data-n]').forEach(t=>t.oninput=()=>saveNote(t.dataset.n,t.value));
+ refreshNotes();
+ const R=ROUTES[D.d],gb=document.getElementById('groute');
+ if(R){gb.classList.remove('off');gb.href=GR(R);gb.innerHTML=`<i>🗺️</i><div><b>Google Maps 開今天完整路線</b><span>${R.length} 個點${mn?' · 開車共 '+fmtMin(mn):''} · 可直接導航</span></div><em>›</em>`}else gb.classList.add('off');
+ drawMap();
+}
+
+// ---------- real Google Maps embeds (keyless) ----------
+const NZQ=x=>/New Zealand|Taiwan/.test(x)?x:x+', New Zealand';
+const EMB=a=>{a=a.map(NZQ);return a.length<2?'https://maps.google.com/maps?q='+encodeURIComponent(a[0])+'&z=12&output=embed'
+ :'https://maps.google.com/maps?saddr='+encodeURIComponent(a[0])+'&daddr='+a.slice(1).map(encodeURIComponent).join('+to:')+'&output=embed'};
+// per-day embed stops (same as ROUTES; days without a driving route show the key place)
+const EROUTES=Object.assign({},ROUTES,{
+ 1:['Taoyuan International Airport Terminal 2, Taiwan'],
+ 14:['Auckland Airport'],
+ 15:['Auckland Airport International Terminal']});
+const ETRIP=['Queenstown Airport','6 Saint Marks Lane, Queenstown','37D Waiau Street, Manapouri','Milford Sound Visitor Terminal','236 Milford Road, Te Anau','20 Alison Avenue, Albert Town','Franz Josef Oasis Hotel','Haast Pass','2963 Tekapo-Twizel Road, Simons Pass','Omahau Down, Lake Pukaki','Lake Tekapo','Christchurch Airport'];
+function setSrc(el,u){if(el.dataset.src!==u){el.dataset.src=u;el.src=u}}
+function drawMap(){const D=DAYS[cur];const ifr=document.getElementById('map');
+ setSrc(ifr,mapAll?EMB(ETRIP):EMB(EROUTES[D.d]||[D.region]));
+ ifr.title=mapAll?'整趟 Google 地圖路線':'D'+D.d+' Google 地圖路線'}
+const mDay=document.getElementById('mDay'),mAll=document.getElementById('mAll');
+document.getElementById('mDay').onclick=()=>{mapAll=false;mDay.classList.add('on');mAll.classList.remove('on');drawMap()};
+document.getElementById('mAll').onclick=()=>{mapAll=true;mAll.classList.add('on');mDay.classList.remove('on');drawMap()};
+
+function renderTodo(){
+ const rows=[];DAYS.forEach(D=>D.items.forEach(it=>{if(it.b===false)rows.push([D,it])}));
+ document.getElementById('todos').innerHTML=rows.map(([D,it])=>`<div class="todo"><div class="dt">D${D.d}<br>${+D.date.slice(5,7)}/${+D.date.slice(8)}</div><div><b>${it.title}</b>${it.sub?`<div class="mut">${it.sub}</div>`:''}${it.info?`<div class="mut">${it.info[0]}</div>`:''}</div></div>`).join('');
+ const now=new Date().toISOString().slice(0,10);
+ document.getElementById('deadlines').innerHTML=DEADLINES.map(([d,n,t])=>`<div class="todo" style="${d<now?'opacity:.45':''}"><div class="dt" style="color:var(--ac)">${+d.slice(5,7)}/${+d.slice(8)}</div><div><b>${n}</b><div class="mut">${t}${d<now?'（已過）':''}</div></div></div>`).join('');
+}
+function renderSw(){const ci=LS.get('color',0);document.getElementById('sw').innerHTML=COLORS.map((c,i)=>`<button style="background:${c[0]}" class="${i===ci?'on':''}" data-c="${i}"></button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>setColor(+b.dataset.c))}
+
+function show(v){document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));if(v!=='game'&&gStop){gStop();gStop=null}
+({todo:renderTodo,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
+document.getElementById('gear').onclick=()=>show('set');
+document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+if(0)document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));if(b.dataset.v==='todo')renderTodo();document.getElementById('chips').style.display=b.dataset.v==='day'?'':'none';window.scrollTo({top:0})});
+
+
+const COSTS=[['國際機票 NZ78/NZ77（來回）','機票',169354,1],['Jetstar JQ299 奧克蘭→皇后鎮','機票',6034,2],['Jetstar JQ232 基督城→奧克蘭','機票',5730,14],
+['GO Rentals RAV4（11 天）','租車',57619,2],
+['皇后鎮 Airbnb 3 晚','住宿',30535,2],['Manapouri Cottage','住宿',6284,5],['Annies on Milford','住宿',5822,6],['Wanaka Riverside 2 晚','住宿',15834,7],['Franz Josef Oasis','住宿',7817,9],['Gibbs Guesthouse','住宿',10165,10],['Simons Hill','住宿',17890,11],['Omahau Down','住宿',14305,12],
+['Glenorchy 騎馬','活動',15337,4],['Shotover Jet','活動',7424,4],['Onsen 泡湯','活動',3363,4],['螢火蟲洞','活動',5641,5],['米佛峽灣小船','活動',7515,6],['瓦納卡跳傘','活動',29760,8],['冰川直升機健行','活動',34231,10],['變色龍觀星','活動',4804,11]];
+const nt=v=>'NT$'+Math.round(v).toLocaleString('en-US');
+function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);const intl=169354;const rest=tot-intl;
+ document.getElementById('costhero').innerHTML=`<div class="d">目前已訂總額</div><h2 style="font-size:28px">${nt(tot)}</h2><div class="stats"><div>${COSTS.length} 筆</div><div>兩人平均 ${nt(tot/2)}</div></div>`;
+  const cats={};COSTS.forEach(c=>cats[c[1]]=(cats[c[1]]||0)+c[2]);const mx=Math.max(...Object.values(cats));
+ document.getElementById('costcat').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${k}</span><b>${nt(v)} <span class="mut">${Math.round(v/tot*100)}%</span></b></div><div class="bar" style="width:${v/mx*100}%"></div></div>`).join('');
+ document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map(c=>`<div class="crow"><span><span class="mut">D${c[3]}</span> ${c[0]}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
+
+let bigSel=null;document.getElementById('gtrip').href=GR(TRIP);
+function renderBig(){const dc=i=>`color-mix(in srgb,var(--ac) ${30+i*5}%,#fff)`;
+ setSrc(document.getElementById('bigmap'),bigSel===null?EMB(ETRIP):EMB(EROUTES[DAYS[bigSel].d]||[DAYS[bigSel].region]));
+ document.getElementById('dgrid').innerHTML=DAYS.map((D,i)=>`<div class="dg ${bigSel===i?'sel':''}" data-g="${i}" style="background:${dc(i)};color:${i>5?'#fff':'var(--tx)'}"><b>D${D.d} · ${+D.date.slice(5,7)}/${+D.date.slice(8)}（${D.w}）</b>${D.region}</div>`).join('')+`<div class="dg" data-g="all" style="background:var(--card);border-color:var(--line)"><b>顯示全部</b>整趟路線</div><div class="dg" data-g="go" style="background:var(--card);border-color:var(--line)"><b>看選取日行程 ›</b>${bigSel!==null?'D'+DAYS[bigSel].d:'先選一天'}</div>`;
+ document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=b.dataset.g;if(g==='all')bigSel=null;else if(g==='go'){if(bigSel!==null){show('day');go(bigSel)}return}else bigSel=(bigSel===+g?null:+g);renderBig()});}
+
+const PACK0=[['證件',['護照 ×2','台灣駕照 ×2','國際駕照 ×2（取車兩人都要）','NZeTA 確認信','信用卡（螢火蟲洞、停車只收卡）','少量紐幣現金']],
+['冰川／戶外',['保暖上衣 3–4 件（冰川健行）','快乾長褲（不能穿牛仔褲）','防水外套','太陽眼鏡（冰川必戴）','防曬乳','防蚊液（Fiordland 沙蠅多）','防滑包鞋','頭戴式相機（Shotover 可用）']],
+['泡湯／觀星',['泳衣','保暖外套（觀星夜間很冷）','毛帽、手套']],
+['電子',['萬用轉接頭（紐西蘭 I 型）','行動電源','手機車架','離線地圖（Milford 沒訊號）']],
+['行李提醒',['國內線手提只能放座位下方','國內線托運每人 20kg']]];
+let packDone=LS.get('pack',{}),packExtra=LS.get('packx',[]);
+function renderPack(){let h='';PACK0.forEach(([g,arr])=>{h+=`<div class="pkh">${g}</div>`+arr.map(x=>pk(x)).join('')});
+ if(packExtra.length)h+='<div class="pkh">我加的</div>'+packExtra.map(x=>pk(x,1)).join('');
+ document.getElementById('packlist').innerHTML=h;
+ document.querySelectorAll('.pk input').forEach(c=>c.onchange=()=>{packDone[c.dataset.p]=c.checked;LS.set('pack',packDone);c.parentElement.classList.toggle('ok',c.checked)});
+ document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{packExtra=packExtra.filter(x=>x!==b.dataset.rm);LS.set('packx',packExtra);renderPack()});}
+function pk(x,rm){const ok=!!packDone[x];return `<label class="pk ${ok?'ok':''}"><input type="checkbox" data-p="${x.replace(/"/g,'')}" ${ok?'checked':''}><span style="flex:1">${x}</span>${rm?`<button class="btn" data-rm="${x}" style="padding:2px 8px">✕</button>`:''}</label>`}
+document.getElementById('packadd').onclick=()=>{const i=document.getElementById('packin');const v=i.value.trim();if(v&&!packExtra.includes(v)){packExtra.push(v);LS.set('packx',packExtra)}i.value='';renderPack()};
+
+// ================= GAMES (offline) =================
+const GAMES=[['g2048','🔢','2048','滑動合併數字'],['gmem','🃏','翻牌配對','紐西蘭主題記憶'],['gttt','⭕','井字棋','對電腦或兩人'],['gsnake','🐍','貪食蛇','滑動或按方向鍵']];
+let gStop=null;
+function renderGames(){if(gStop){gStop();gStop=null}
+ document.getElementById('gamebox').innerHTML='<div class="gpick">'+GAMES.map(g=>`<button class="gcard" data-g="${g[0]}"><i>${g[1]}</i><b>${g[2]}</b><span>${g[3]}</span></button>`).join('')+'</div><div class="mut" style="margin:10px 2px">遊戲完全在手機上跑、不用網路。在沒訊號的地方（例如往米佛峽灣的路上）之前，先把這頁打開放著。</div>';
+ document.querySelectorAll('.gcard').forEach(b=>b.onclick=()=>startGame(b.dataset.g))}
+function gHead(title,extra){return `<div class="ghead"><button class="btn" id="gback">‹ 遊戲</button><b>${title}</b><span id="gscore" style="margin-left:auto">${extra||''}</span></div>`}
+function startGame(id){if(gStop){gStop();gStop=null}const box=document.getElementById('gamebox');({g2048,gmem,gttt,gsnake})[id](box);document.getElementById('gback').onclick=renderGames}
+function swipe(el,cb){let x0,y0;el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
+ el.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;cb(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));x0=null})}
+function keys(cb){const h=e=>{const m={ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D'}[e.key];if(m){e.preventDefault();cb(m)}};window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h)}
+const pad=()=>`<div class="pad"><span></span><button data-k="U">▲</button><span></span><button data-k="L">◀</button><button data-k="D">▼</button><button data-k="R">▶</button></div>`;
+function bindPad(cb){document.querySelectorAll('.pad button').forEach(b=>b.onclick=()=>cb(b.dataset.k))}
+
+// ---- 2048 ----
+function g2048(box){let g,score,best=LS.get('best2048',0),over;
+ const init=()=>{g=Array(16).fill(0);score=0;over=false;add();add();draw()};
+ const add=()=>{const e=g.map((v,i)=>v?-1:i).filter(i=>i>=0);if(e.length)g[e[Math.random()*e.length|0]]=Math.random()<.9?2:4};
+ const line=a=>{a=a.filter(Boolean);for(let i=0;i<a.length-1;i++)if(a[i]===a[i+1]){a[i]*=2;score+=a[i];a.splice(i+1,1)}while(a.length<4)a.push(0);return a};
+ const move=d=>{if(over)return;const old=g.join();for(let r=0;r<4;r++){let idx=[0,1,2,3].map(c=>d==='L'||d==='R'?r*4+c:c*4+r);if(d==='R'||d==='D')idx.reverse();const res=line(idx.map(i=>g[i]));idx.forEach((i,k)=>g[i]=res[k])}
+  if(g.join()!==old){add();if(score>best){best=score;LS.set('best2048',best)}}
+  over=!g.includes(0)&&![0,1,2,3].some(r=>[0,1,2].some(c=>g[r*4+c]===g[r*4+c+1]||g[c*4+r]===g[(c+1)*4+r]));draw()};
+ const col=v=>v?`color-mix(in srgb,var(--ac) ${Math.min(95,12+Math.log2(v)*8)}%,#fff)`:'rgba(0,0,0,.05)';
+ const draw=()=>{if(!box.querySelector('#b2048'))return;box.querySelector('#b2048').innerHTML=g.map(v=>`<div class="t2" style="background:${col(v)};color:${v>=16?'#fff':'var(--tx)'};font-size:${v>=1024?18:v>=128?22:26}px">${v||''}</div>`).join('');
+  document.getElementById('gscore').textContent=`分數 ${score}　最高 ${best}`;box.querySelector('#gmsg').textContent=over?'沒有步了！按「重來」':(g.includes(2048)?'🎉 2048！可以繼續挑戰':'')};
+ box.innerHTML=gHead('2048')+`<div class="board" id="b2048" style="grid-template-columns:repeat(4,1fr)"></div><div id="gmsg" class="gmsg"></div>${pad()}<div style="text-align:center"><button class="btn pri" id="gre">重來</button></div>`;
+ swipe(box.querySelector('#b2048'),move);bindPad(move);gStop=keys(move);box.querySelector('#gre').onclick=init;init()}
+
+// ---- memory ----
+function gmem(box){const E=['🥝','🐑','🏔️','🐧','⛵','🍷','🌌','🚁'];let cards,open,done,moves,lock,t0,tm;
+ const init=()=>{cards=[...E,...E].sort(()=>Math.random()-.5);open=[];done=new Set();moves=0;lock=false;t0=null;clearInterval(tm);draw()};
+ const draw=()=>{if(!box.querySelector('#bm'))return;box.querySelector('#bm').innerHTML=cards.map((c,i)=>`<button class="mc ${open.includes(i)||done.has(i)?'up':''} ${done.has(i)?'ok':''}" data-i="${i}">${open.includes(i)||done.has(i)?c:''}</button>`).join('');
+  box.querySelectorAll('.mc').forEach(b=>b.onclick=()=>flip(+b.dataset.i));
+  const sec=t0?Math.round((Date.now()-t0)/1000):0;const best=LS.get('bestmem',null);
+  document.getElementById('gscore').textContent=`步數 ${moves}　${sec}s${best?'　最佳 '+best+' 步':''}`;
+  box.querySelector('#gmsg').textContent=done.size===16?`🎉 完成！${moves} 步、${sec} 秒`:''};
+ const flip=i=>{if(lock||open.includes(i)||done.has(i))return;if(!t0){t0=Date.now();tm=setInterval(draw,1000)}open.push(i);
+  if(open.length===2){moves++;const[a,b]=open;if(cards[a]===cards[b]){done.add(a);done.add(b);open=[];if(done.size===16){clearInterval(tm);const best=LS.get('bestmem',null);if(!best||moves<best)LS.set('bestmem',moves)}}else{lock=true;setTimeout(()=>{open=[];lock=false;draw()},700)}}draw()};
+ box.innerHTML=gHead('翻牌配對')+`<div class="board" id="bm" style="grid-template-columns:repeat(4,1fr)"></div><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">重來</button></div>`;
+ box.querySelector('#gre').onclick=init;gStop=()=>clearInterval(tm);init()}
+
+// ---- tic tac toe ----
+function gttt(box){let b,turn,mode='ai',win,score=LS.get('ttt',{X:0,O:0,D:0});const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ const W=a=>{for(const[x,y,z]of L)if(a[x]&&a[x]===a[y]&&a[x]===a[z])return a[x];return a.includes('')?null:'D'};
+ const mm=(a,p)=>{const w=W(a);if(w)return{s:w==='O'?1:w==='X'?-1:0};let best={s:p==='O'?-2:2};a.forEach((v,i)=>{if(v)return;a[i]=p;const r=mm(a,p==='O'?'X':'O');a[i]='';if(p==='O'?r.s>best.s:r.s<best.s)best={s:r.s,i}});return best};
+ const init=()=>{b=Array(9).fill('');turn='X';win=null;draw()};
+ const end=()=>{win=W(b);if(win){score[win]++;LS.set('ttt',score)}};
+ const play=i=>{if(win||b[i])return;b[i]=turn;end();turn=turn==='X'?'O':'X';draw();
+  if(!win&&mode==='ai'&&turn==='O'){setTimeout(()=>{if(!box.querySelector('#bt'))return;const e=b.map((v,k)=>v?-1:k).filter(k=>k>=0);const k=Math.random()<.15?e[Math.random()*e.length|0]:mm(b,'O').i;b[k]='O';end();turn='X';draw()},300)}};
+ const draw=()=>{if(!box.querySelector('#bt'))return;box.querySelector('#bt').innerHTML=b.map((v,i)=>`<button class="tc" data-i="${i}" style="color:${v==='X'?'var(--ac)':'#b45309'}">${v==='X'?'✕':v==='O'?'◯':''}</button>`).join('');
+  box.querySelectorAll('.tc').forEach(x=>x.onclick=()=>play(+x.dataset.i));
+  document.getElementById('gscore').textContent=`✕ ${score.X}　◯ ${score.O}　平 ${score.D}`;
+  box.querySelector('#gmsg').textContent=win?(win==='D'?'平手！':(win==='X'?'✕ 贏了！':'◯ 贏了！')):(mode==='ai'?'你是 ✕':(turn==='X'?'輪到 ✕':'輪到 ◯'));
+  box.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('pri',x.dataset.m===mode))};
+ box.innerHTML=gHead('井字棋')+`<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button class="btn" data-m="ai">對電腦</button><button class="btn" data-m="pvp">兩人</button></div><div class="board" id="bt" style="grid-template-columns:repeat(3,1fr);max-width:300px"></div><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">再一局</button></div>`;
+ box.querySelectorAll('[data-m]').forEach(x=>x.onclick=()=>{mode=x.dataset.m;init()});box.querySelector('#gre').onclick=init;init()}
+
+// ---- snake ----
+function gsnake(box){const N=16;let sn,dir,nd,food,score,best=LS.get('bestsnake',0),tm,alive,cv,cx,sz;
+ box.innerHTML=gHead('貪食蛇')+`<canvas id="cs" class="board" style="display:block;padding:0;aspect-ratio:1/1;width:100%;max-width:340px"></canvas><div id="gmsg" class="gmsg"></div>${pad()}<div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ cv=box.querySelector('#cs');const px=Math.min(340,box.clientWidth||340);cv.width=cv.height=px*2;cx=cv.getContext('2d');sz=cv.width/N;
+ const ac=getComputedStyle(document.documentElement).getPropertyValue('--ac').trim();
+ const place=()=>{do{food=[Math.random()*N|0,Math.random()*N|0]}while(sn.some(p=>p[0]===food[0]&&p[1]===food[1]))};
+ const draw=()=>{if(!cv.isConnected)return;cx.fillStyle='#f5f0ea';cx.fillRect(0,0,cv.width,cv.height);cx.font=`${sz*.85}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText('🥝',food[0]*sz+sz/2,food[1]*sz+sz/2+2);
+  sn.forEach((p,i)=>{cx.fillStyle=i?ac:'#3f2d1f';cx.beginPath();cx.roundRect(p[0]*sz+2,p[1]*sz+2,sz-4,sz-4,sz*.3);cx.fill()});
+  document.getElementById('gscore').textContent=`分數 ${score}　最高 ${best}`};
+ const step=()=>{dir=nd;const h=[sn[0][0]+dir[0],sn[0][1]+dir[1]];
+  if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||sn.some(p=>p[0]===h[0]&&p[1]===h[1])){alive=false;clearInterval(tm);if(score>best){best=score;LS.set('bestsnake',best)}box.querySelector('#gmsg').textContent='撞到了！按「開始」再玩';box.querySelector('#gre').textContent='開始';draw();return}
+  sn.unshift(h);if(h[0]===food[0]&&h[1]===food[1]){score++;place();clearInterval(tm);tm=setInterval(step,Math.max(70,160-score*4))}else sn.pop();draw()};
+ const init=()=>{sn=[[8,8],[7,8],[6,8]];dir=nd=[1,0];score=0;alive=true;place();clearInterval(tm);tm=setInterval(step,160);box.querySelector('#gmsg').textContent='';box.querySelector('#gre').textContent='重來';draw()};
+ const turn=k=>{const d={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]}[k];if(d[0]===-dir[0]&&d[1]===-dir[1])return;nd=d};
+ swipe(cv,turn);bindPad(turn);const uk=keys(turn);box.querySelector('#gre').onclick=init;
+ sn=[[8,8],[7,8],[6,8]];dir=nd=[1,0];score=0;place();draw();box.querySelector('#gmsg').textContent='按「開始」，滑動或用方向鍵控制';
+ gStop=()=>{clearInterval(tm);uk()}}
+
+function countdown(){const n=new Date();const start=new Date('2027-02-03T20:25:00+08:00');const days=Math.ceil((start-n)/864e5);const ti=todayIdx();
+ document.getElementById('cd').textContent=ti>=0?`旅程第 ${ti+1} 天`:days>0?`倒數 ${days} 天`:'旅程結束 🎉'}
+
+setColor(LS.get('color',0));
+const hm=(location.hash.match(/day(\d+)/)||[])[1];
+cur=hm?Math.min(DAYS.length-1,Math.max(0,+hm-1)):Math.max(0,todayIdx());
+countdown();render();initShared();
+window.addEventListener('hashchange',()=>{const m=(location.hash.match(/day(\d+)/)||[])[1];if(m&&+m-1!==cur){cur=+m-1;render()}});
+</script>
+</body>
+</html>
