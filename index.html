@@ -229,7 +229,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
       <div class="mut">
         • 點行程卡片展開：注意事項、你自己的備註<br>
         • 「導航」會開 Google Maps，從你目前位置出發，車程以 Google 即時路況為準<br>
-        • 🚗 車程是 2026/11/19 在 Google Maps 查的時間（不含停留）；出發當天以導航為準<br>
+        • 🚗 車程是 2026/11/19 在 Google Maps 查的時間（不含停留）；出發當天以導航為準；標「估計」的是還沒用 Google 查、先抓的大概時間<br>
         • 行程備註、打包清單、旅途記帳都只存在這支手機（瀏覽器本機儲存），不會和另一支手機同步<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
         • 資料來源：Google Sheet「15天行程」（2026/11/18 版本）；試算表改了要記得更新這頁
       </div>
@@ -270,6 +270,8 @@ const DAYS=[
  {t:'住宿',k:'stay',title:'Airbnb 景觀一房（第 1/3 晚）',sub:'6 Saint Marks Lane',b:true,c:[-45.0275,168.6735],q:'6 Saint Marks Lane, Queenstown',info:['2/4–2/7 共 3 晚，入住 15:00–00:00，退房 10:00 前','抵達前 7 天房東會傳入住資訊'],warn:['入住截止 00:00，航班延誤先傳訊息給房東','2027/1/28 15:00（當地）前取消可部分退款']}
 ]},
 {d:3,date:'2027-02-05',w:'五',title:'皇后鎮市區',region:'皇后鎮',items:[
+ {t:'',k:'home',title:'從住處出發',c:[-45.0275,168.6735]},
+ {drive:1,min:5,est:1,o:'6 Saint Marks Lane, Queenstown',dq:'Skyline Queenstown'},
  {t:'',k:'act',title:'Skyline 纜車 + Luge 溜溜車',b:false,c:[-45.0312,168.6553],u:'https://maps.app.goo.gl/WMbV6AfuPKpYB7sv5'},
  {drive:1,min:28,o:'Skyline Queenstown',dq:'Gibbston Valley Winery'},
  {t:'',k:'wine',title:'Gibbston Valley 酒莊',b:false,c:[-45.0127,168.9474],q:'Gibbston Valley Winery',info:['2/9 往瓦納卡途中也會經過，兩天擇一即可']},
@@ -316,8 +318,10 @@ const DAYS=[
  {t:'06:30',k:'info',title:'打電話確認天氣',sub:'Skydive Wanaka（電話見 email）',warn:['天候取消就改 2/11 早上備案']},
  {drive:1,min:12,o:'20 Alison Avenue, Albert Town',dq:'14 Mustang Lane, Wanaka'},
  {t:'07:10',k:'sky',title:'15,000ft 雙人跳傘',sub:'7:30 出發，約 10:30 結束',b:true,c:[-44.7222,169.2456],u:'https://maps.app.goo.gl/YfAYLccynskg2cjz8',info:['7:10 報到：14 Mustang Lane（瓦納卡機場）','穿舒適衣服＋包鞋；可戴眼鏡','跳傘服、護目鏡、手套業者提供'],warn:['不能帶相機／GoPro','2/9 7:30 後取消收全額']},
+ {drive:1,min:15,est:1,o:'14 Mustang Lane, Wanaka',dq:'Rippon Vineyard Wanaka'},
  {t:'下午',k:'wine',title:'Rippon 酒莊 或 步槍體驗',b:false,c:[-44.7038,169.0905],u:'https://maps.app.goo.gl/kdtqHyNYZbN1QXkS7',info:['和 Gibbston Valley 酒莊擇一']},
  {t:'傍晚',k:'spa',title:'The Secret Sauna Cardrona',b:'opt',q:'The Secret Sauna Cardrona',u:'https://maps.app.goo.gl/n9Ag84RkaoLgbAgK7',info:['目前暫不安排']},
+ {drive:1,min:15,est:1,o:'Rippon Vineyard Wanaka',dq:'20 Alison Avenue, Albert Town'},
  {t:'住宿',k:'stay',title:'Wanaka Riverside Townhouse（第 2 晚）',b:true,c:[-44.682,169.193],q:'20 Alison Avenue, Albert Town',warn:['2/11 10:00 前退房']}
 ]},
 {d:9,date:'2027-02-11',w:'四',title:'翻越 Haast Pass 到西岸',region:'Franz Josef',items:[
@@ -327,6 +331,8 @@ const DAYS=[
  {t:'住宿',k:'stay',title:'Franz Josef Oasis Hotel',sub:'含早餐',b:true,c:[-43.388,170.182],q:'Franz Josef Oasis Hotel',info:['入住 15:00–20:00，退房 07:00–10:00','入住細節見 email'],warn:['入住只到 20:00！','2/8 23:59 前免費取消，之後收全額']}
 ]},
 {d:10,date:'2027-02-12',w:'五',title:'直升機冰川健行',region:'Franz Josef',items:[
+ {t:'09:45',k:'home',title:'Franz Josef Oasis 退房出發',c:[-43.388,170.182],warn:['退房 10:00 前']},
+ {drive:1,min:2,est:1,o:'Franz Josef Oasis Hotel',dq:'Franz Josef Glacier Guides, 63 Cron Street',note:'同一個小鎮，走路也可以'},
  {t:'10:15',k:'heli',title:'Franz Josef 冰川直升機健行',sub:'10:30 出發，約 14:30 結束',b:true,c:[-43.387,170.183],q:'Franz Josef Glacier Guides 63 Cron Street',info:['10:15 報到：63 Cron Street','要帶：3–4 件保暖上衣、快乾褲、太陽眼鏡（必戴）、水、點心','背包可寄放在 Glacier Base'],warn:['出發前 24 小時要完成線上報到（waiver），連結在確認信','不能穿牛仔褲、滑雪褲；不能帶自拍棒、空拍機','天候差或不滿 4 人可能取消 → 改 2/13 早上','2/11 10:15 後改期／取消收全額']},
  {t:'下午',k:'walk',title:'Lake Matheson／冰川步道／溫泉',b:'opt',c:[-43.438,169.964],q:'Lake Matheson'},
  {drive:1,min:4,o:'Franz Josef Glacier Guides, 63 Cron Street',dq:'Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare'},
@@ -338,7 +344,9 @@ const DAYS=[
  {drive:1,min:352,o:'Gibbs Guesthouse Tatare',dq:'2963 Tekapo-Twizel Road, Simons Pass'},
  {t:'住宿',k:'stay',title:'Simons Hill（暗空保護區）',sub:'有熱水浴缸',b:true,c:[-44.13,170.29],q:'2963 Tekapo-Twizel Road, Simons Pass',info:['入住 15:00 起，退房 10:00 前','入住細節見 email'],warn:['2/5 23:59 前免費取消，之後收全額']},
  {drive:1,min:22,o:'2963 Tekapo-Twizel Road, Simons Pass',dq:'Lake Tekapo',note:'集合點看業者 email'},
- {t:'22:30',k:'star',title:'變色龍觀星（中文團）',sub:'約 90 分鐘，00:00 結束',b:true,c:[-44.0047,170.4772],q:'Lake Tekapo',info:['憑證在信件附件／Klook App','集合地點業者另寄 email；中文團和英文團集合點不同、沒有接駁'],warn:['天氣不好改 2/14 晚上','回 Simons Hill 約 30 分鐘夜車，注意動物']}
+ {t:'22:30',k:'star',title:'變色龍觀星（中文團）',sub:'約 90 分鐘，00:00 結束',b:true,c:[-44.0047,170.4772],q:'Lake Tekapo',info:['憑證在信件附件／Klook App','集合地點業者另寄 email；中文團和英文團集合點不同、沒有接駁'],warn:['天氣不好改 2/14 晚上','回 Simons Hill 約 30 分鐘夜車，注意動物']},
+ {drive:1,min:22,est:1,o:'Lake Tekapo',dq:'2963 Tekapo-Twizel Road, Simons Pass',note:'夜車，注意動物'},
+ {t:'00:30',k:'home',title:'回 Simons Hill 住宿',c:[-44.13,170.29]}
 ]},
 {d:12,date:'2027-02-14',w:'日',title:'庫克山健行・鮭魚',region:'Mt Cook / Pukaki',items:[
  {t:'早上',k:'home',title:'Simons Hill 退房',c:[-44.13,170.29],warn:['10:00 前退房']},
@@ -346,6 +354,7 @@ const DAYS=[
  {t:'',k:'walk',title:'Hooker Valley Track',sub:'來回約 3 小時，庫克山步道很多可選',c:[-43.718,170.093],q:'Hooker Valley Track car park'},
  {drive:1,min:51,o:'Hooker Valley Track car park',dq:'High Country Salmon Twizel'},
  {t:'',k:'food',title:'High Country Salmon',sub:'Twizel，鮭魚生魚片',c:[-44.224,170.125],u:'https://maps.app.goo.gl/iGH865JBpiJ4vHbc9'},
+ {drive:1,min:10,est:1,o:'High Country Salmon Twizel',dq:'Omahau Down, Lake Pukaki'},
  {t:'晚上',k:'star',title:'觀星備案',sub:'只有 2/13 被取消才去',b:'opt'},
  {t:'住宿',k:'stay',title:'Omahau Down',sub:'Lake Pukaki',b:true,c:[-44.235,170.105],q:'Omahau Down 5744 Tekapo-Twizel Road',info:['入住 15:00–23:00，退房 08:00–10:00','入住細節見 email'],warn:['2/6 23:59 前免費取消，之後收全額']}
 ]},
@@ -384,7 +393,7 @@ const ROUTES={
 8:['20 Alison Avenue, Albert Town','14 Mustang Lane, Wanaka','Rippon Vineyard Wanaka','20 Alison Avenue, Albert Town'],
 9:['20 Alison Avenue, Albert Town','Franz Josef Oasis Hotel'],
 10:['Franz Josef Oasis Hotel','Franz Josef Glacier Guides, 63 Cron Street','Lake Matheson','Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare'],
-11:['Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare','Haast Pass','2963 Tekapo-Twizel Road, Simons Pass','Lake Tekapo'],
+11:['Gibbs Guesthouse, 2824 Franz Josef Hwy, Tatare','Haast Pass','2963 Tekapo-Twizel Road, Simons Pass','Lake Tekapo','2963 Tekapo-Twizel Road, Simons Pass'],
 12:['2963 Tekapo-Twizel Road, Simons Pass','Hooker Valley Track','High Country Salmon Twizel','Omahau Down, Lake Pukaki'],
 13:['Omahau Down, Lake Pukaki','Astro Cafe Mount John','Cleavers Corner Gastro Pub Ashburton','C1 Espresso Christchurch','GO Rentals, 155 Orchard Road, Christchurch'],
 14:['Christchurch Airport']
@@ -442,6 +451,7 @@ const SPOTS={
 {title:'Gibbston Valley 酒莊',text:'皇后鎮往東約半小時，是 Kawarau 峽谷裡頗具代表性的 Central Otago 酒莊，以黑皮諾（Pinot Noir）聞名，也有餐廳和酒窖可以坐下來。2/5 和 2/9 都會經過，兩天擇一即可。',img:'gibbston-valley.jpg'},
 {title:'Kawarau 吊橋蹦極（備案）',text:'卡瓦勞橋（Kawarau Bridge）是 1988 年 AJ Hackett 開出的全球第一座商業蹦極，跳點離河面約 43 公尺。這是今天空檔的備案，不一定會跳。',img:'kawarau-bungy.jpg'}],
 4:[{title:'Glenorchy 格林諾奇',text:'瓦卡蒂普湖最深處的小鎮，從皇后鎮沿湖公路開車約一小時，沿途風景本身就值得慢慢開。鎮上的紅色船屋和 Lagoon 木棧道都在附近，午餐後可以走走；騎馬記得 9:00 前報到備馬。',img:'glenorchy.jpg'},
+{title:'Glenorchy 騎馬（Lighthorse · The River Wild）',text:'在 Rees 和 Dart 兩條冰河河谷之間騎馬，背景是雪山和《魔戒》取景過的山谷地形，路線會穿越淺河（看天氣），新手也能騎。9:30 出發、9:00 前要報到備馬；業者提供防水外套、靴子和頭盔，自己穿長褲＋襪子。騎乘時不能背包，手機放拉鍊口袋。（照片為騎馬涉水示意，非當地實景）',img:'glenorchy-horse.jpg'},
 {title:'Shotover Jet 噴射快艇',text:'在肖特奧弗河（Shotover River）峽谷裡高速轉彎、原地迴旋的噴射快艇，是皇后鎮最經典的水上活動之一，船上約 25 分鐘。記得戴太陽眼鏡、做好防曬，並帶一件保暖外套。',img:'shotover-jet.jpg'},
 {title:'Onsen Hot Pools 泡湯',text:'Arthurs Point 的日式露天溫泉，獨立湯屋面向河谷。你們訂的是晚上時段，可邊泡邊看日落（當天日落約 21:09）；20:30 前要到櫃台，晚到會被縮短時間。',img:'onsen.jpg'}],
 5:[{title:'Te Anau 螢火蟲洞',text:'RealNZ 的行程會先坐船橫渡 Te Anau 湖，再走進石灰岩洞穴、坐小船看螢火蟲。洞內禁止拍照錄影，帶防滑鞋和外套即可。',img:'glowworms.jpg'}],
@@ -493,7 +503,7 @@ function render(){
  // next item
  let nextKey=null;if(cur===ti){const hm=nzNow().hm;const c=D.items.find(x=>!x.drive&&/^\d\d:\d\d/.test(x.t)&&x.t>=hm);if(c)nextKey=c}
  let n=0;const html=D.items.map((it,j)=>{
-  if(it.drive){return `<div class="drive">🚗 <span><b>${fmtMin(it.min)}</b><span class="est">Google</span>${it.note?'<br><span style="font-size:11.5px">'+it.note+'</span>':''}</span><a href="${DIR(it.o,it.dq)}" target="_blank" rel="noopener">路線 ›</a></div>`}
+  if(it.drive){return `<div class="drive">🚗 <span><b>${it.est?'約 ':''}${fmtMin(it.min)}</b><span class="est">${it.est?'估計':'Google'}</span>${it.note?'<br><span style="font-size:11.5px">'+it.note+'</span>':''}</span><a href="${DIR(it.o,it.dq)}" target="_blank" rel="noopener">路線 ›</a></div>`}
   const key=ikey(D,it);const num=it.c?++n:'';
   const badge=it.b===true?'<span class="badge b-ok">已訂</span>':it.b===false?'<span class="badge b-no">未訂</span>':it.b==='opt'?'<span class="badge b-opt">備案/可選</span>':'';
   const nu=navUrl(it);
