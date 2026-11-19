@@ -119,8 +119,6 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .spot .sbody{padding:10px 14px 12px}
 .spot h3{margin:0 0 4px;font-size:15px}
 .spot p{margin:0;font-size:13.5px;line-height:1.55}
-.spot .cred{margin-top:6px;font-size:10.5px;color:var(--mut)}
-.spot .cred a{color:var(--mut);text-decoration:underline;text-underline-offset:2px}
 @media(min-width:800px){
   #expform,#expsum,#explist,.settle{max-width:640px}
 }
@@ -232,7 +230,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
         • 點行程卡片展開：注意事項、你自己的備註<br>
         • 「導航」會開 Google Maps，從你目前位置出發，車程以 Google 即時路況為準<br>
         • 🚗 車程是 2026/11/19 在 Google Maps 查的時間（不含停留）；出發當天以導航為準<br>
-        • 行程備註、打包清單、旅途記帳都只存在這支手機（瀏覽器本機儲存），不會和另一支手機同步<br>• 景點照片來自 Wikimedia Commons，作者與授權見各張照片下方<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
+        • 行程備註、打包清單、旅途記帳都只存在這支手機（瀏覽器本機儲存），不會和另一支手機同步<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
         • 資料來源：Google Sheet「15天行程」（2026/11/18 版本）；試算表改了要記得更新這頁
       </div>
     </div>
@@ -438,35 +436,43 @@ let cur=0,mapAll=false;
 
 const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const SPOTS={
-2:[{title:'皇后鎮 Queenstown',text:'坐落在瓦卡蒂普湖（Lake Wakatipu）畔，背後是 The Remarkables 山脈，有「冒險之都」之稱。這天晚上才到，湖景明天再慢慢看就好。',img:'queenstown.jpg',by:'Σ64',lic:'CC BY 4.0',url:'https://commons.wikimedia.org/wiki/File:The_Remarkables_from_Queenstown,_New_Zealand_04.jpg'}],
-3:[{title:'Skyline 纜車與 Luge',text:'纜車上 Skyline 山頂，約升高 480 公尺，可俯瞰皇后鎮、瓦卡蒂普湖和 The Remarkables。山頂有 Luge 溜溜車，兩條賽道都能自己控制速度；想少排隊，早一點或接近傍晚再上山較合適。',img:'skyline-gondola.jpg',by:'Skyline Enterprises NZ',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Skyline_Queenstown_Gondola.jpg'},
-{title:'Gibbston Valley 酒莊',text:'皇后鎮往東約半小時，是 Kawarau 峽谷裡頗具代表性的 Central Otago 酒莊，以黑皮諾（Pinot Noir）聞名，也有餐廳和酒窖可以坐下來。2/5 和 2/9 都會經過，兩天擇一即可。',img:'gibbston-valley.jpg',by:'Jocelyn Kinghorn',lic:'CC BY-SA 2.0',url:'https://commons.wikimedia.org/wiki/File:Gibbston_valley_1.jpg'}],
-4:[{title:'Glenorchy 格林諾奇',text:'瓦卡蒂普湖最深處的小鎮，從皇后鎮沿湖公路開車約一小時，沿途風景本身就值得慢慢開。鎮上的紅色船屋和 Lagoon 木棧道都在附近，午餐後可以走走；騎馬記得 9:00 前報到備馬。',img:'glenorchy.jpg',by:'Pseudopanax',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:Glenorchy_wharf_and_red_shed_at_Lake_Wakatipu.jpg'},
-{title:'Shotover Jet 噴射快艇',text:'在肖特奧弗河（Shotover River）峽谷裡高速轉彎、原地迴旋的噴射快艇，是皇后鎮最經典的水上活動之一，船上約 25 分鐘。記得戴太陽眼鏡、做好防曬，並帶一件保暖外套。',img:'shotover-jet.jpg',by:'Bernard Spragg',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:The_Shotover_Jet._Queenstown_NZ_(9561460958).jpg'},
-{title:'Onsen Hot Pools 泡湯',text:'Arthurs Point 的日式露天溫泉，獨立湯屋面向河谷。你們訂的是晚上時段，可邊泡邊看日落（當天日落約 21:09）；20:30 前要到櫃台，晚到會被縮短時間。'}],
-5:[{title:'Te Anau 螢火蟲洞',text:'RealNZ 的行程會先坐船橫渡 Te Anau 湖，再走進石灰岩洞穴、坐小船看螢火蟲。洞內禁止拍照錄影，帶防滑鞋和外套即可。',img:'lake-te-anau.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Lake_Te_Anau_03.jpg'}],
-6:[{title:'米佛峽灣 Milford Sound',text:'米佛峽灣（Piopiotahi）是峽灣國家公園、世界遺產 Te Wāhipounamu 的代表景點，米特峰（Mitre Peak）近乎垂直地從水面升起。這裡經常下雨，雨大時瀑布反而更壯觀，船上記得帶防水外套。',img:'milford-sound.jpg',by:'MurielBendel',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Milford_Sound_Mitre_Peak.JPG'},
-{title:'Mirror Lakes 鏡湖',text:'米佛公路沿途的小湖，風平浪靜時會映出 Earl Mountains 的倒影。就在路邊，停車看一眼即可。',img:'mirror-lakes.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Mirror_Lakes_in_Fiordland_National_Park_03.jpg'}],
-7:[{title:'That Wanaka Tree',text:'瓦納卡湖淺灘上的一棵柳樹，是紐西蘭被拍得最多的樹之一，就在鎮內湖岸步道旁，走走就能到。你們住 Albert Town，開車幾分鐘就到湖邊；不是固定行程，傍晚去光線往往比較好看。',img:'wanaka-tree.jpg',by:'Kate Branch',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:That_Wanaka_Tree,_New_Zealand.jpg'}],
-8:[{title:'瓦納卡跳傘',text:'從 15,000 呎雙人跳傘，可俯瞰瓦納卡湖和南阿爾卑斯山。7:10 在瓦納卡機場報到；能不能跳全看天氣，取消就改明天早上。'},
-{title:'Rippon 酒莊',text:'瓦納卡湖畔最出名的酒莊之一，葡萄園順坡向下延伸到湖面，是南島常被拍攝的酒莊景色，以黑皮諾為主。和 Gibbston Valley 擇一即可。',img:'rippon.jpg',by:'ED01',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:RipponVineyard.jpg'}],
-9:[{title:'Haast Pass 與雷鳴溪瀑布',text:'Haast Pass（Tioripatea）連接瓦納卡與西岸，穿過阿斯派靈山國家公園，沿途是雨林和瀑布；雷鳴溪瀑布（Thunder Creek Falls）就在公路旁，走很短的步道就能看到。西岸加油站少，出發前請在瓦納卡加滿油。',img:'thunder-creek-falls.jpg',by:'itravelNZ',lic:'CC BY 2.0',url:'https://commons.wikimedia.org/wiki/File:Thunder_Creek_Falls_Flickr_01.jpg'}],
-10:[{title:'弗朗茲約瑟夫冰川',text:'弗朗茲約瑟夫冰川（Kā Roimata o Hine Hukatere）從高山往下接近西岸雨林，冰與森林同框是這裡最特別的地方。現在要上冰川多半得坐直升機，天候或不滿 4 人可能取消，已有隔天早上的備案。',img:'franz-josef.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Franz_Josef_Glacier_17.jpg'},
-{title:'Lake Matheson 馬提森湖',text:'以倒映庫克山（Aoraki）和塔斯曼山聞名。湖水因森林單寧呈深色，無風時像鏡子，愈早去通常愈平靜。整圈約 4.4 公里、一個半小時；只走到 Jetty Lookout 來回約 45 分鐘。',img:'lake-matheson.jpg',by:'Pseudopanax',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:Lake_Matheson_reflection_of_Mount_Tasman_and_Aoraki_Mount_Cook.jpg'}],
-11:[{title:'蒂卡波湖與善牧教堂',text:'蒂卡波湖因冰川岩粉呈現獨特的藍綠色；湖岸的善牧教堂（Church of the Good Shepherd）於 1935 年建成，是麥肯齊盆地拓荒者的紀念教堂。這是仍在使用的教堂，拍照時請不要爬石牆；此地屬 Aoraki Mackenzie 國際暗空保護區，晚上很適合觀星。',img:'church-good-shepherd.jpg',by:'Michal Klajban',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Church_of_the_Good_Shepherd,_Lake_Tekapo,_New_Zealand_03.jpg'}],
-12:[{title:'Hooker Valley Track',text:'庫克山國家公園最受歡迎的步道之一，路面平整好走，來回約 10 公里、三小時，會過三座吊橋，終點是 Hooker Lake。天氣好時能看到紐西蘭最高峰 Aoraki／庫克山（3,724 公尺）；風大時步道可能關閉。',img:'hooker-valley.jpg',by:'Jan Helebrant',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:2014-02-06_12-39-42_NZ_Hooker_Valley_track_JH_(52203296931).jpg'},
-{title:'普卡基湖 Lake Pukaki',text:'同樣因冰川岩粉呈現明亮的藍綠色，湖的盡頭就是庫克山，是南島最經典的湖山合景之一。今晚住在湖邊的 Omahau Down，傍晚或清晨都適合看湖色。',img:'lake-pukaki.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Lake_Pukaki_%26_Aoraki_Mount_Cook_01.jpg'}],
-13:[{title:'約翰山 Astro Café',text:'約翰山（Mount John）上有坎特伯里大學天文台，Astro Café 可俯瞰整個蒂卡波湖。上山需付道路費（見行程）；廚房 14:00 收、咖啡廳開到 15:00，早上經過剛好。',img:'mount-john.jpg',by:'Bernard Spragg',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Mount_John_University_Observatory.Lake_Tekapo.NZ_(11881764616).jpg'},
-{title:'基督城 Christchurch',text:'南島最大城市，有「花園城市」之稱，雅芳河（Avon River）和植物園是市區最輕鬆的散步處。這天行程很緊，傍晚要趕到機場 21:00 前還車，只能路過、不宜再排景點。',img:'christchurch.jpg',by:'Daderot',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Avon_River_-_Christchurch_Botanic_Gardens_-_Christchurch,_NZ_-_DSC01208.jpg'}],
-14:[{title:'奧克蘭 Auckland',text:'紐西蘭最大城市，海港與天空塔是市區最一眼能認出的景色。JQ232 約 11:15 抵達，隔天中午才起飛；若改住市區，下午可以去維多利亞碼頭或坐渡輪到 Devonport。目前住宿寫的是機場附近，尚未預訂。',img:'auckland.jpg',by:'Ziqi CHAI',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Viaduct_Basin_in_Auckland.jpg'}]
+2:[{title:'皇后鎮 Queenstown',text:'坐落在瓦卡蒂普湖（Lake Wakatipu）畔，背後是 The Remarkables 山脈，有「冒險之都」之稱。這天晚上才到，湖景明天再慢慢看就好。',img:'queenstown.jpg'}],
+3:[{title:'Skyline 纜車',text:'纜車上 Skyline 山頂，約升高 480 公尺，可俯瞰皇后鎮、瓦卡蒂普湖和 The Remarkables。',img:'skyline-gondola.jpg'},
+{title:'Skyline Luge 溜溜車',text:'山頂有 Luge 溜溜車，兩條賽道都能自己控制速度。想少排隊，早一點或接近傍晚再上山較合適。',img:'skyline-luge.jpg'},
+{title:'Gibbston Valley 酒莊',text:'皇后鎮往東約半小時，是 Kawarau 峽谷裡頗具代表性的 Central Otago 酒莊，以黑皮諾（Pinot Noir）聞名，也有餐廳和酒窖可以坐下來。2/5 和 2/9 都會經過，兩天擇一即可。',img:'gibbston-valley.jpg'},
+{title:'Kawarau 吊橋蹦極（備案）',text:'卡瓦勞橋（Kawarau Bridge）是 1988 年 AJ Hackett 開出的全球第一座商業蹦極，跳點離河面約 43 公尺。這是今天空檔的備案，不一定會跳。',img:'kawarau-bungy.jpg'}],
+4:[{title:'Glenorchy 格林諾奇',text:'瓦卡蒂普湖最深處的小鎮，從皇后鎮沿湖公路開車約一小時，沿途風景本身就值得慢慢開。鎮上的紅色船屋和 Lagoon 木棧道都在附近，午餐後可以走走；騎馬記得 9:00 前報到備馬。',img:'glenorchy.jpg'},
+{title:'Shotover Jet 噴射快艇',text:'在肖特奧弗河（Shotover River）峽谷裡高速轉彎、原地迴旋的噴射快艇，是皇后鎮最經典的水上活動之一，船上約 25 分鐘。記得戴太陽眼鏡、做好防曬，並帶一件保暖外套。',img:'shotover-jet.jpg'},
+{title:'Onsen Hot Pools 泡湯',text:'Arthurs Point 的日式露天溫泉，獨立湯屋面向河谷。你們訂的是晚上時段，可邊泡邊看日落（當天日落約 21:09）；20:30 前要到櫃台，晚到會被縮短時間。',img:'onsen.jpg'}],
+5:[{title:'Te Anau 螢火蟲洞',text:'RealNZ 的行程會先坐船橫渡 Te Anau 湖，再走進石灰岩洞穴、坐小船看螢火蟲。洞內禁止拍照錄影，帶防滑鞋和外套即可。',img:'glowworms.jpg'}],
+6:[{title:'米佛峽灣 Milford Sound',text:'米佛峽灣（Piopiotahi）是峽灣國家公園、世界遺產 Te Wāhipounamu 的代表景點，米特峰（Mitre Peak）近乎垂直地從水面升起。這裡經常下雨，雨大時瀑布反而更壯觀，船上記得帶防水外套。',img:'milford-sound.jpg'},
+{title:'Mirror Lakes 鏡湖',text:'米佛公路沿途的小湖，風平浪靜時會映出 Earl Mountains 的倒影。就在路邊，停車看一眼即可。',img:'mirror-lakes.jpg'},
+{title:'Eglinton Valley 埃格林頓谷',text:'埃格林頓谷（Eglinton Valley）是米佛公路上開闊的河谷，兩側是山壁和山毛櫸林，常是沿途停車拍照的地方。',img:'eglinton-valley.jpg'},
+{title:'The Chasm',text:'The Chasm 靠近 Homer Tunnel 這一側，Cleddau 河把岩石沖出窄縫，從公路旁走很短的步道就能看到。',img:'the-chasm.jpg'}],
+7:[{title:'That Wanaka Tree',text:'瓦納卡湖淺灘上的一棵柳樹，是紐西蘭被拍得最多的樹之一，就在鎮內湖岸步道旁，走走就能到。你們住 Albert Town，開車幾分鐘就到湖邊；不是固定行程，傍晚去光線往往比較好看。',img:'wanaka-tree.jpg'}],
+8:[{title:'瓦納卡跳傘',text:'從 15,000 呎雙人跳傘，可俯瞰瓦納卡湖和南阿爾卑斯山。7:10 在瓦納卡機場報到；能不能跳全看天氣，取消就改明天早上。',img:'wanaka-skydive.jpg'},
+{title:'Rippon 酒莊',text:'瓦納卡湖畔最出名的酒莊之一，葡萄園順坡向下延伸到湖面，是南島常被拍攝的酒莊景色，以黑皮諾為主。和 Gibbston Valley 擇一即可。',img:'rippon.jpg'},
+{title:'The Secret Sauna Cardrona',text:'Cardrona 山谷裡的 Secret Sauna，在皇后鎮往瓦納卡的 Crown Range 路上。目前暫不安排。',img:'secret-sauna.jpg'}],
+9:[{title:'Haast Pass 與雷鳴溪瀑布',text:'Haast Pass（Tioripatea）連接瓦納卡與西岸，穿過阿斯派靈山國家公園，沿途是雨林和瀑布；雷鳴溪瀑布（Thunder Creek Falls）就在公路旁，走很短的步道就能看到。西岸加油站少，出發前請在瓦納卡加滿油。',img:'thunder-creek-falls.jpg'}],
+10:[{title:'弗朗茲約瑟夫冰川',text:'弗朗茲約瑟夫冰川（Kā Roimata o Hine Hukatere）從高山往下接近西岸雨林，冰與森林同框是這裡最特別的地方。現在要上冰川多半得坐直升機，天候或不滿 4 人可能取消，已有隔天早上的備案。',img:'franz-josef.jpg'},
+{title:'Lake Matheson 馬提森湖',text:'以倒映庫克山（Aoraki）和塔斯曼山聞名。湖水因森林單寧呈深色，無風時像鏡子，愈早去通常愈平靜。整圈約 4.4 公里、一個半小時；只走到 Jetty Lookout 來回約 45 分鐘。',img:'lake-matheson.jpg'}],
+11:[{title:'蒂卡波湖與善牧教堂',text:'蒂卡波湖因冰川岩粉呈現獨特的藍綠色；湖岸的善牧教堂（Church of the Good Shepherd）於 1935 年建成，是麥肯齊盆地拓荒者的紀念教堂。這是仍在使用的教堂，拍照時請不要爬石牆；此地屬 Aoraki Mackenzie 國際暗空保護區，晚上很適合觀星。',img:'church-good-shepherd.jpg'},
+{title:'變色龍觀星',text:'變色龍觀星是約 90 分鐘的中文團，在 Aoraki Mackenzie 國際暗空保護區；集合地點業者會另寄 email。若當晚天氣不好，已改約 2/14 晚上。',img:'tekapo-night.jpg'}],
+12:[{title:'Hooker Valley Track',text:'庫克山國家公園最受歡迎的步道之一，路面平整好走，來回約 10 公里、三小時，會過三座吊橋，終點是 Hooker Lake。天氣好時能看到紐西蘭最高峰 Aoraki／庫克山（3,724 公尺）；風大時步道可能關閉。',img:'hooker-valley.jpg'},
+{title:'High Country Salmon',text:'High Country Salmon 在 Twizel 附近的水力渠道上養鮭魚，行程中作為午餐停留，可以吃到新鮮鮭魚生魚片。',img:'high-country-salmon.jpg'},
+{title:'普卡基湖 Lake Pukaki',text:'同樣因冰川岩粉呈現明亮的藍綠色，湖的盡頭就是庫克山，是南島最經典的湖山合景之一。今晚住在湖邊的 Omahau Down，傍晚或清晨都適合看湖色。',img:'lake-pukaki.jpg'}],
+13:[{title:'約翰山 Astro Café',text:'約翰山（Mount John）上有坎特伯里大學天文台，Astro Café 可俯瞰整個蒂卡波湖。上山需付道路費（見行程）；廚房 14:00 收、咖啡廳開到 15:00，早上經過剛好。',img:'mount-john.jpg'},
+{title:'Cleavers Corner Gastro Pub',text:'Cleavers Corner Gastro Pub 是阿什伯頓的一間酒吧餐廳。這天從蒂卡波開往基督城，會在這裡吃晚餐。',img:'cleavers-corner.jpg'},
+{title:'C1 Espresso',text:'C1 Espresso 是基督城頗有名的咖啡館，行程上寫週一開到 21:00。這天 21:00 前要還車，時間會很緊。',img:'c1-espresso.jpg'},
+{title:'基督城 Christchurch',text:'南島最大城市，有「花園城市」之稱，雅芳河（Avon River）和植物園是市區最輕鬆的散步處。這天行程很緊，傍晚要趕到機場 21:00 前還車，只能路過、不宜再排景點。',img:'christchurch.jpg'}],
+14:[{title:'奧克蘭 Auckland',text:'紐西蘭最大城市，海港與天空塔是市區最一眼能認出的景色。JQ232 約 11:15 抵達，隔天中午才起飛；若改住市區，下午可以去維多利亞碼頭或坐渡輪到 Devonport。目前住宿寫的是機場附近，尚未預訂。',img:'auckland.jpg'}]
 };
 function renderSpots(d){
   const list=SPOTS[d]||[];
   if(!list.length)return '';
   return `<div class="sec">今天亮點</div><div class="spots">${list.map(s=>{
     const pic=s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:'';
-    const cred=s.img?`<div class="cred">照片：<a href="${s.url}" target="_blank" rel="noopener">${esc(s.by)}</a>　${esc(s.lic)}　·　<a href="${s.url}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`:'';
-    return `<article class="spot${s.img?'':' nopic'}">${pic}<div class="sbody"><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${cred}</div></article>`;
+    return `<article class="spot${s.img?'':' nopic'}">${pic}<div class="sbody"><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p></div></article>`;
   }).join('')}</div>`;
 }
 
