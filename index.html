@@ -45,7 +45,6 @@ main{padding:0 14px}
 .tl{position:relative}
 .it{background:var(--card);border-radius:16px;border:1px solid var(--line);padding:12px 12px 12px 12px;margin-bottom:8px;display:flex;gap:10px}
 .it.next{border-color:var(--ac);box-shadow:0 0 0 2px var(--ac2)}
-.it.done{opacity:.5}
 .ic{flex:0 0 38px;height:38px;border-radius:12px;background:var(--ac2);display:flex;align-items:center;justify-content:center;font-size:19px;position:relative}
 .ic .n{position:absolute;top:-5px;left:-5px;background:var(--ac);color:#fff;font-size:10px;border-radius:9px;min-width:17px;height:17px;display:flex;align-items:center;justify-content:center;font-weight:700}
 .bd{flex:1;min-width:0}
@@ -106,6 +105,42 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .pk input{width:20px;height:20px;accent-color:var(--ac)}
 .pk.ok span{text-decoration:line-through;color:var(--mut)}
 .pkh{font-size:12.5px;color:var(--ac);font-weight:700;margin:12px 2px 6px}
+
+.spots{margin-top:4px;display:flex;flex-direction:column;gap:10px}
+.spot{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
+@media(min-width:800px){
+  .spot{display:flex;align-items:stretch}
+  .spot .pic{flex:0 0 48%;max-width:420px}
+  .spot .sbody{display:flex;flex-direction:column;justify-content:center}
+  .spot.nopic{display:block}
+}
+.spot .pic{aspect-ratio:16/9;overflow:hidden;background:var(--ac2)}
+.spot .pic img{display:block;width:100%;height:100%;object-fit:cover}
+.spot .sbody{padding:10px 14px 12px}
+.spot h3{margin:0 0 4px;font-size:15px}
+.spot p{margin:0;font-size:13.5px;line-height:1.55}
+.spot .cred{margin-top:6px;font-size:10.5px;color:var(--mut)}
+.spot .cred a{color:var(--mut);text-decoration:underline;text-underline-offset:2px}
+@media(min-width:800px){
+  #expform,#expsum,#explist,.settle{max-width:640px}
+}
+.chips2{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 10px}
+.chips2 button{font:inherit;font-size:12.5px;border:1px solid var(--line);background:var(--ac2);border-radius:999px;padding:4px 10px;cursor:pointer;color:var(--tx)}
+.chips2 button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+.seg{display:flex;border:1px solid var(--line);border-radius:10px;overflow:hidden}
+.seg button{flex:1;font:inherit;font-size:13.5px;border:0;background:var(--card);padding:7px 8px;cursor:pointer;color:var(--tx)}
+.seg button.on{background:var(--ac);color:#fff}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fgrid .full{grid-column:1/-1}
+.fld{display:flex;flex-direction:column;gap:3px;font-size:12px;color:var(--mut)}
+.fld input,.fld select{font:inherit;font-size:14.5px;color:var(--tx);border:1px solid var(--line);border-radius:10px;padding:7px 9px;background:#fff;width:100%}
+.settle{background:var(--ac);color:#fff;border-radius:16px;padding:12px 14px;margin:8px 0 10px}
+.settle .big{font-size:18px;font-weight:700;margin-top:2px}
+.exrow{display:flex;gap:8px;align-items:flex-start;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.exrow:last-child{border:0}
+.exrow .amt{margin-left:auto;font-weight:700;white-space:nowrap}
+.exrow .ops{display:flex;gap:2px;flex:0 0 auto}
+.exrow .ops button{border:0;background:none;color:var(--mut);font:inherit;font-size:13px;cursor:pointer;padding:2px 6px}
 </style>
 </head>
 <body>
@@ -123,6 +158,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
       <div class="maptog"><button id="mDay" class="on">當天</button><button id="mAll">全程</button></div>
       
     </div>
+    <div id="spots"></div>
     <div class="sec" id="tlh">行程 <span id="nstat" style="color:var(--warn);font-weight:400"></span></div>
     <div class="tl" id="tl"></div>
   </section>
@@ -135,12 +171,41 @@ nav.tab button.on{color:var(--ac);font-weight:700}
   </section>
 
   <section class="view" id="v-cost">
+    <div class="sec">旅途記帳（紐幣 NZ$）</div>
+    <div class="card" id="expform">
+      <div class="chips2" id="expcats"></div>
+      <div class="fgrid">
+        <label class="fld"><span>日期</span><input type="date" id="exp-date"></label>
+        <label class="fld"><span>金額 NZ$</span><input type="number" id="exp-amt" min="0" step="0.01" inputmode="decimal" placeholder="0"></label>
+        <label class="fld full"><span>項目</span><input type="text" id="exp-item" placeholder="例如：午餐、加油"></label>
+        <div class="fld"><span>誰先付</span><div class="seg" id="exp-payer"><button type="button" data-v="聿馨" class="on">聿馨</button><button type="button" data-v="宇翔">宇翔</button></div></div>
+        <label class="fld"><span>分攤</span>
+          <select id="exp-split">
+            <option value="half" selected>兩人平分</option>
+            <option value="self">只算付款人自己</option>
+            <option value="other">全算對方</option>
+          </select>
+        </label>
+      </div>
+      <div class="acts" style="margin-top:10px">
+        <button class="btn pri" id="exp-add" type="button">新增一筆</button>
+        <button class="btn" id="exp-cancel" type="button" style="display:none">取消編輯</button>
+      </div>
+    </div>
+    <div id="expsum"></div>
+    <div class="sec" id="explabel">這次記下的</div>
+    <div id="explist"></div>
+    <div class="acts" style="margin:4px 0 8px">
+      <button class="btn" id="exp-export" type="button">匯出複製（可貼到試算表）</button>
+    </div>
+    <div class="mut" style="margin:0 2px 18px">記帳只存在這支手機的瀏覽器裡，不會和宇翔的手機同步。若要兩人一起記，之後可以改成寫進 Google Sheet。</div>
+
     <div class="hero" id="costhero"></div>
-        <div class="sec">分類</div>
+    <div class="sec">出發前已訂（新台幣）</div>
     <div class="card" id="costcat"></div>
     <div class="sec">明細（已付／已訂）</div>
     <div id="costlist"></div>
-    <div class="mut" style="margin:6px 2px 14px">金額取自行程試算表 $$ 欄；未訂項目（Skyline、酒莊、機場旅館、接送）尚未計入。</div>
+    <div class="mut" style="margin:6px 2px 14px">金額取自行程試算表 $$ 欄；未訂項目（Skyline、酒莊、機場旅館、接送）尚未計入。國際機票總額列在上面，兩人實際怎麼分不寫在這個公開頁面上。</div>
   </section>
 
   <section class="view" id="v-pack">
@@ -167,7 +232,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
         • 點行程卡片展開：注意事項、你自己的備註<br>
         • 「導航」會開 Google Maps，從你目前位置出發，車程以 Google 即時路況為準<br>
         • 🚗 車程是 2026/11/19 在 Google Maps 查的時間（不含停留）；出發當天以導航為準<br>
-        • 行程備註、打勾完成、打包清單都只存在這支手機（瀏覽器本機儲存）<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
+        • 行程備註、打包清單、旅途記帳都只存在這支手機（瀏覽器本機儲存），不會和另一支手機同步<br>• 景點照片來自 Wikimedia Commons，作者與授權見各張照片下方<br>• 訂位編號、PIN、電話等私人資料不放在這個公開網頁上，請看 email<br>
         • 資料來源：Google Sheet「15天行程」（2026/11/18 版本）；試算表改了要記得更新這頁
       </div>
     </div>
@@ -196,7 +261,7 @@ const DAYS=[
 {d:1,date:'2027-02-03',w:'三',title:'出發！台北 → 奧克蘭',region:'桃園',items:[
  {t:'16:30',k:'car',title:'機場接送',b:false,info:['還沒訂']},
  {t:'17:45',k:'info',title:'抵達桃園機場 T2'},
- {t:'20:25',k:'fly',title:'NZ78 台北 → 奧克蘭',sub:'Air NZ · 桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 18:55','行李托運截止 19:25']},
+ {t:'20:25',k:'fly',title:'NZ78 台北 → 奧克蘭',sub:'Air NZ Skycouch · 桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 18:55','行李托運截止 19:25']},
  {t:'夜',k:'stay',title:'機上過夜'}
 ]},
 {d:2,date:'2027-02-04',w:'四',title:'奧克蘭轉機 → 皇后鎮',region:'皇后鎮',items:[
@@ -305,7 +370,7 @@ const DAYS=[
 ]},
 {d:15,date:'2027-02-17',w:'三',title:'回家',region:'奧克蘭 → 台北',items:[
  {t:'09:30',k:'info',title:'抵達奧克蘭國際航廈'},
- {t:'12:20',k:'fly',title:'NZ77 奧克蘭 → 台北',sub:'18:35 抵達桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 10:50','行李托運截止 11:20']},
+ {t:'12:20',k:'fly',title:'NZ77 奧克蘭 → 台北',sub:'Air NZ Skycouch · 18:35 抵達桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 10:50','行李托運截止 11:20']},
  {t:'18:35',k:'home',title:'抵達桃機，回家！'},
  {t:'',k:'car',title:'機場接送',b:false}
 ]}
@@ -343,7 +408,6 @@ const DEADLINES=[
 
 // ---------- state ----------
 const LS={get(k,d){try{const v=localStorage.getItem('nz27_'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},set(k,v){try{localStorage.setItem('nz27_'+k,JSON.stringify(v))}catch(e){}}};
-let done=LS.get('done',{});
 function ikey(D,it){let h=0;for(const ch of it.title)h=(h*31+ch.codePointAt(0))>>>0;return 'd'+D.d+'-'+h.toString(36)}
 // ---------- personal notes (localStorage, this device only) ----------
 let SN=LS.get('notes',{});
@@ -371,6 +435,41 @@ function todayIdx(){const n=nzNow();const tw=new Date().toLocaleDateString('en-C
 const fmtMin=m=>m<60?m+' 分':(Math.floor(m/60)+' 小時'+(m%60?' '+m%60+' 分':''));
 
 let cur=0,mapAll=false;
+
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const SPOTS={
+2:[{title:'皇后鎮 Queenstown',text:'坐落在瓦卡蒂普湖（Lake Wakatipu）畔，背後是 The Remarkables 山脈，有「冒險之都」之稱。這天晚上才到，湖景明天再慢慢看就好。',img:'queenstown.jpg',by:'Σ64',lic:'CC BY 4.0',url:'https://commons.wikimedia.org/wiki/File:The_Remarkables_from_Queenstown,_New_Zealand_04.jpg'}],
+3:[{title:'Skyline 纜車與 Luge',text:'纜車上 Skyline 山頂，約升高 480 公尺，可俯瞰皇后鎮、瓦卡蒂普湖和 The Remarkables。山頂有 Luge 溜溜車，兩條賽道都能自己控制速度；想少排隊，早一點或接近傍晚再上山較合適。',img:'skyline-gondola.jpg',by:'Skyline Enterprises NZ',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Skyline_Queenstown_Gondola.jpg'},
+{title:'Gibbston Valley 酒莊',text:'皇后鎮往東約半小時，是 Kawarau 峽谷裡頗具代表性的 Central Otago 酒莊，以黑皮諾（Pinot Noir）聞名，也有餐廳和酒窖可以坐下來。2/5 和 2/9 都會經過，兩天擇一即可。',img:'gibbston-valley.jpg',by:'Jocelyn Kinghorn',lic:'CC BY-SA 2.0',url:'https://commons.wikimedia.org/wiki/File:Gibbston_valley_1.jpg'}],
+4:[{title:'Glenorchy 格林諾奇',text:'瓦卡蒂普湖最深處的小鎮，從皇后鎮沿湖公路開車約一小時，沿途風景本身就值得慢慢開。鎮上的紅色船屋和 Lagoon 木棧道都在附近，午餐後可以走走；騎馬記得 9:00 前報到備馬。',img:'glenorchy.jpg',by:'Pseudopanax',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:Glenorchy_wharf_and_red_shed_at_Lake_Wakatipu.jpg'},
+{title:'Shotover Jet 噴射快艇',text:'在肖特奧弗河（Shotover River）峽谷裡高速轉彎、原地迴旋的噴射快艇，是皇后鎮最經典的水上活動之一，船上約 25 分鐘。記得戴太陽眼鏡、做好防曬，並帶一件保暖外套。',img:'shotover-jet.jpg',by:'Bernard Spragg',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:The_Shotover_Jet._Queenstown_NZ_(9561460958).jpg'},
+{title:'Onsen Hot Pools 泡湯',text:'Arthurs Point 的日式露天溫泉，獨立湯屋面向河谷。你們訂的是晚上時段，可邊泡邊看日落（當天日落約 21:09）；20:30 前要到櫃台，晚到會被縮短時間。'}],
+5:[{title:'Te Anau 螢火蟲洞',text:'RealNZ 的行程會先坐船橫渡 Te Anau 湖，再走進石灰岩洞穴、坐小船看螢火蟲。洞內禁止拍照錄影，帶防滑鞋和外套即可。',img:'lake-te-anau.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Lake_Te_Anau_03.jpg'}],
+6:[{title:'米佛峽灣 Milford Sound',text:'米佛峽灣（Piopiotahi）是峽灣國家公園、世界遺產 Te Wāhipounamu 的代表景點，米特峰（Mitre Peak）近乎垂直地從水面升起。這裡經常下雨，雨大時瀑布反而更壯觀，船上記得帶防水外套。',img:'milford-sound.jpg',by:'MurielBendel',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Milford_Sound_Mitre_Peak.JPG'},
+{title:'Mirror Lakes 鏡湖',text:'米佛公路沿途的小湖，風平浪靜時會映出 Earl Mountains 的倒影。就在路邊，停車看一眼即可。',img:'mirror-lakes.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Mirror_Lakes_in_Fiordland_National_Park_03.jpg'}],
+7:[{title:'That Wanaka Tree',text:'瓦納卡湖淺灘上的一棵柳樹，是紐西蘭被拍得最多的樹之一，就在鎮內湖岸步道旁，走走就能到。你們住 Albert Town，開車幾分鐘就到湖邊；不是固定行程，傍晚去光線往往比較好看。',img:'wanaka-tree.jpg',by:'Kate Branch',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:That_Wanaka_Tree,_New_Zealand.jpg'}],
+8:[{title:'瓦納卡跳傘',text:'從 15,000 呎雙人跳傘，可俯瞰瓦納卡湖和南阿爾卑斯山。7:10 在瓦納卡機場報到；能不能跳全看天氣，取消就改明天早上。'},
+{title:'Rippon 酒莊',text:'瓦納卡湖畔最出名的酒莊之一，葡萄園順坡向下延伸到湖面，是南島常被拍攝的酒莊景色，以黑皮諾為主。和 Gibbston Valley 擇一即可。',img:'rippon.jpg',by:'ED01',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:RipponVineyard.jpg'}],
+9:[{title:'Haast Pass 與雷鳴溪瀑布',text:'Haast Pass（Tioripatea）連接瓦納卡與西岸，穿過阿斯派靈山國家公園，沿途是雨林和瀑布；雷鳴溪瀑布（Thunder Creek Falls）就在公路旁，走很短的步道就能看到。西岸加油站少，出發前請在瓦納卡加滿油。',img:'thunder-creek-falls.jpg',by:'itravelNZ',lic:'CC BY 2.0',url:'https://commons.wikimedia.org/wiki/File:Thunder_Creek_Falls_Flickr_01.jpg'}],
+10:[{title:'弗朗茲約瑟夫冰川',text:'弗朗茲約瑟夫冰川（Kā Roimata o Hine Hukatere）從高山往下接近西岸雨林，冰與森林同框是這裡最特別的地方。現在要上冰川多半得坐直升機，天候或不滿 4 人可能取消，已有隔天早上的備案。',img:'franz-josef.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Franz_Josef_Glacier_17.jpg'},
+{title:'Lake Matheson 馬提森湖',text:'以倒映庫克山（Aoraki）和塔斯曼山聞名。湖水因森林單寧呈深色，無風時像鏡子，愈早去通常愈平靜。整圈約 4.4 公里、一個半小時；只走到 Jetty Lookout 來回約 45 分鐘。',img:'lake-matheson.jpg',by:'Pseudopanax',lic:'公有領域',url:'https://commons.wikimedia.org/wiki/File:Lake_Matheson_reflection_of_Mount_Tasman_and_Aoraki_Mount_Cook.jpg'}],
+11:[{title:'蒂卡波湖與善牧教堂',text:'蒂卡波湖因冰川岩粉呈現獨特的藍綠色；湖岸的善牧教堂（Church of the Good Shepherd）於 1935 年建成，是麥肯齊盆地拓荒者的紀念教堂。這是仍在使用的教堂，拍照時請不要爬石牆；此地屬 Aoraki Mackenzie 國際暗空保護區，晚上很適合觀星。',img:'church-good-shepherd.jpg',by:'Michal Klajban',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Church_of_the_Good_Shepherd,_Lake_Tekapo,_New_Zealand_03.jpg'}],
+12:[{title:'Hooker Valley Track',text:'庫克山國家公園最受歡迎的步道之一，路面平整好走，來回約 10 公里、三小時，會過三座吊橋，終點是 Hooker Lake。天氣好時能看到紐西蘭最高峰 Aoraki／庫克山（3,724 公尺）；風大時步道可能關閉。',img:'hooker-valley.jpg',by:'Jan Helebrant',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:2014-02-06_12-39-42_NZ_Hooker_Valley_track_JH_(52203296931).jpg'},
+{title:'普卡基湖 Lake Pukaki',text:'同樣因冰川岩粉呈現明亮的藍綠色，湖的盡頭就是庫克山，是南島最經典的湖山合景之一。今晚住在湖邊的 Omahau Down，傍晚或清晨都適合看湖色。',img:'lake-pukaki.jpg',by:'Krzysztof Golik',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Lake_Pukaki_%26_Aoraki_Mount_Cook_01.jpg'}],
+13:[{title:'約翰山 Astro Café',text:'約翰山（Mount John）上有坎特伯里大學天文台，Astro Café 可俯瞰整個蒂卡波湖。上山需付道路費（見行程）；廚房 14:00 收、咖啡廳開到 15:00，早上經過剛好。',img:'mount-john.jpg',by:'Bernard Spragg',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Mount_John_University_Observatory.Lake_Tekapo.NZ_(11881764616).jpg'},
+{title:'基督城 Christchurch',text:'南島最大城市，有「花園城市」之稱，雅芳河（Avon River）和植物園是市區最輕鬆的散步處。這天行程很緊，傍晚要趕到機場 21:00 前還車，只能路過、不宜再排景點。',img:'christchurch.jpg',by:'Daderot',lic:'CC0',url:'https://commons.wikimedia.org/wiki/File:Avon_River_-_Christchurch_Botanic_Gardens_-_Christchurch,_NZ_-_DSC01208.jpg'}],
+14:[{title:'奧克蘭 Auckland',text:'紐西蘭最大城市，海港與天空塔是市區最一眼能認出的景色。JQ232 約 11:15 抵達，隔天中午才起飛；若改住市區，下午可以去維多利亞碼頭或坐渡輪到 Devonport。目前住宿寫的是機場附近，尚未預訂。',img:'auckland.jpg',by:'Ziqi CHAI',lic:'CC BY-SA 4.0',url:'https://commons.wikimedia.org/wiki/File:Viaduct_Basin_in_Auckland.jpg'}]
+};
+function renderSpots(d){
+  const list=SPOTS[d]||[];
+  if(!list.length)return '';
+  return `<div class="sec">今天亮點</div><div class="spots">${list.map(s=>{
+    const pic=s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:'';
+    const cred=s.img?`<div class="cred">照片：<a href="${s.url}" target="_blank" rel="noopener">${esc(s.by)}</a>　${esc(s.lic)}　·　<a href="${s.url}" target="_blank" rel="noopener">Wikimedia Commons</a></div>`:'';
+    return `<article class="spot${s.img?'':' nopic'}">${pic}<div class="sbody"><h3>${esc(s.title)}</h3><p>${esc(s.text)}</p>${cred}</div></article>`;
+  }).join('')}</div>`;
+}
+
 function renderChips(){const ti=todayIdx();document.getElementById('chips').innerHTML=DAYS.map((x,i)=>`<div class="chip ${i===cur?'on':''} ${i===ti?'today':''}" data-i="${i}" style="${i===cur?'':`background:color-mix(in srgb,var(--ac) ${8+i*4}%,#fff);${i>9?'color:#fff':''}`}"><b>D${x.d}</b><span>${+x.date.slice(5,7)}/${+x.date.slice(8)}（${x.w}）</span></div>`).join('');
  document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>go(+c.dataset.i));
  const on=document.querySelector('.chip.on');on&&on.scrollIntoView({inline:'center',block:'nearest'})}
@@ -392,19 +491,20 @@ function render(){
   const key=ikey(D,it);const num=it.c?++n:'';
   const badge=it.b===true?'<span class="badge b-ok">已訂</span>':it.b===false?'<span class="badge b-no">未訂</span>':it.b==='opt'?'<span class="badge b-opt">備案/可選</span>':'';
   const nu=navUrl(it);
-  return `<div class="it ${done[key]?'done':''} ${it===nextKey?'next':''}" data-k="${key}">
+  const acts=(nu?`<a class="btn pri" href="${nu}" target="_blank" rel="noopener">🧭 導航</a>`:'')+(it.q&&it.u&&!it.u.startsWith('https://maps.app')?`<a class="btn" href="${G(it.q)}" target="_blank" rel="noopener">地圖</a>`:'');
+  return `<div class="it ${it===nextKey?'next':''}" data-k="${key}">
    <div class="ic">${IC[it.k]||'📍'}${num?`<span class="n">${num}</span>`:''}</div>
    <div class="bd"><div class="tm">${it===nextKey?'▶ 下一站 · ':''}${it.t||''}</div>
    <div class="tt">${it.title}${badge}</div>${it.sub?`<div class="sub">${it.sub}</div>`:''}<div class="nprev" data-prev="${key}"></div>
-   ${(it.warn&&it.warn.length&&!done[key])?`<div class="sub" style="color:var(--warn)">⚠️ ${it.warn[0]}${it.warn.length>1?` 等 ${it.warn.length} 項`:''}</div>`:''}
+   ${(it.warn&&it.warn.length)?`<div class="sub" style="color:var(--warn)">⚠️ ${it.warn[0]}${it.warn.length>1?` 等 ${it.warn.length} 項`:''}</div>`:''}
    <div class="more">${it.info?'<ul>'+it.info.map(x=>'<li>'+x+'</li>').join('')+'</ul>':''}
     ${it.warn?'<div class="w"><b>注意</b><ul>'+it.warn.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':''}
     <textarea data-n="${key}"></textarea><div class="nmeta" data-meta="${key}"></div></div>
-   <div class="acts">${nu?`<a class="btn pri" href="${nu}" target="_blank" rel="noopener">🧭 導航</a>`:''}${it.q&&it.u&&!it.u.startsWith('https://maps.app')?`<a class="btn" href="${G(it.q)}" target="_blank" rel="noopener">地圖</a>`:''}<button class="btn" data-d="${key}">${done[key]?'↺ 未完成':'✓ 完成'}</button></div>
+   ${acts?`<div class="acts">${acts}</div>`:''}
    </div></div>`}).join('');
  document.getElementById('tl').innerHTML=html;
+ document.getElementById('spots').innerHTML=renderSpots(D.d);
  document.querySelectorAll('.it').forEach(el=>el.addEventListener('click',e=>{if(e.target.closest('a,button,textarea'))return;el.classList.toggle('open')}));
- document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{const k=b.dataset.d;done[k]=!done[k];LS.set('done',done);render()});
  document.querySelectorAll('textarea[data-n]').forEach(t=>t.oninput=()=>saveNote(t.dataset.n,t.value));
  refreshNotes();
  const R=ROUTES[D.d],gb=document.getElementById('groute');
@@ -450,8 +550,9 @@ const COSTS=[['國際機票 NZ78/NZ77（來回）','機票',169354,1],['Jetstar 
 ['皇后鎮 Airbnb 3 晚','住宿',30535,2],['Manapouri Cottage','住宿',6284,5],['Annies on Milford','住宿',5822,6],['Wanaka Riverside 2 晚','住宿',15834,7],['Franz Josef Oasis','住宿',7817,9],['Gibbs Guesthouse','住宿',10165,10],['Simons Hill','住宿',17890,11],['Omahau Down','住宿',14305,12],
 ['Glenorchy 騎馬','活動',15337,4],['Shotover Jet','活動',7424,4],['Onsen 泡湯','活動',3363,4],['螢火蟲洞','活動',5641,5],['米佛峽灣小船','活動',7515,6],['瓦納卡跳傘','活動',29760,8],['冰川直升機健行','活動',34231,10],['變色龍觀星','活動',4804,11]];
 const nt=v=>'NT$'+Math.round(v).toLocaleString('en-US');
-function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);const intl=169354;const rest=tot-intl;
- document.getElementById('costhero').innerHTML=`<div class="d">目前已訂總額</div><h2 style="font-size:28px">${nt(tot)}</h2><div class="stats"><div>${COSTS.length} 筆</div><div>兩人平均 ${nt(tot/2)}</div></div>`;
+function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);
+ document.getElementById('costhero').innerHTML=`<div class="d">出發前已訂總額（新台幣）</div><h2 style="font-size:28px">${nt(tot)}</h2><div class="stats"><div>${COSTS.length} 筆</div></div>`;
+ renderExpenses();
   const cats={};COSTS.forEach(c=>cats[c[1]]=(cats[c[1]]||0)+c[2]);const mx=Math.max(...Object.values(cats));
  document.getElementById('costcat').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${k}</span><b>${nt(v)} <span class="mut">${Math.round(v/tot*100)}%</span></b></div><div class="bar" style="width:${v/mx*100}%"></div></div>`).join('');
  document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map(c=>`<div class="crow"><span><span class="mut">D${c[3]}</span> ${c[0]}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
@@ -551,13 +652,150 @@ function gsnake(box){const N=16;let sn,dir,nd,food,score,best=LS.get('bestsnake'
  sn=[[8,8],[7,8],[6,8]];dir=nd=[1,0];score=0;place();draw();box.querySelector('#gmsg').textContent='按「開始」，滑動或用方向鍵控制';
  gStop=()=>{clearInterval(tm);uk()}}
 
+
+// ---------- on-trip expenses (NZ$, this device only) ----------
+const EXP_CATS=['餐費','油錢','停車','門票','超市','其他'];
+const SPLIT_LABEL={half:'兩人平分',self:'只算付款人自己',other:'全算對方'};
+let expenses=LS.get('expenses',[]);
+if(!Array.isArray(expenses))expenses=[];
+let expEdit=null;
+const nzd=v=>{const n=Number(v)||0;return 'NZ$'+n.toLocaleString('en-NZ',{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2})};
+function todayISO(){const d=new Date();const off=d.getTimezoneOffset()*60000;return new Date(d-off).toISOString().slice(0,10)}
+function expPayer(){const on=document.querySelector('#exp-payer button.on');return on?on.dataset.v:'聿馨'}
+function resetExpForm(){expEdit=null;
+  const di=document.getElementById('exp-date');if(di&&!di.value)di.value=todayISO();
+  document.getElementById('exp-item').value='';
+  document.getElementById('exp-amt').value='';
+  document.getElementById('exp-split').value='half';
+  document.querySelectorAll('#exp-payer button').forEach(b=>b.classList.toggle('on',b.dataset.v==='聿馨'));
+  document.querySelectorAll('#expcats button').forEach(b=>b.classList.remove('on'));
+  document.getElementById('exp-add').textContent='新增一筆';
+  document.getElementById('exp-cancel').style.display='none';
+}
+function saveExpenses(){LS.set('expenses',expenses)}
+function expNet(){
+  let oweXH=0,oweHX=0,paid={}; // oweXH: 宇翔應付給聿馨
+  paid['聿馨']=0;paid['宇翔']=0;
+  expenses.forEach(e=>{
+    const amt=Number(e.amt)||0;const p=e.payer;
+    paid[p]=(paid[p]||0)+amt;
+    const other=p==='聿馨'?'宇翔':'聿馨';
+    let debt=0;
+    if(e.split==='half')debt=amt/2;
+    else if(e.split==='other')debt=amt;
+    if(debt){
+      if(p==='聿馨')oweXH+=debt;else oweHX+=debt;
+    }
+  });
+  const net=Math.round((oweXH-oweHX)*100)/100;
+  return {paid,net};
+}
+function renderExpenses(){
+  const box=document.getElementById('explist');if(!box)return;
+  const di=document.getElementById('exp-date');if(di&&!di.value)di.value=todayISO();
+  const {paid,net}=expNet();
+  const sum=document.getElementById('expsum');
+  let line='目前互不拖欠';
+  if(net>0)line=`宇翔要給聿馨 ${nzd(net)}`;
+  else if(net<0)line=`聿馨要給宇翔 ${nzd(-net)}`;
+  sum.innerHTML=`<div class="card" style="display:flex;gap:14px;flex-wrap:wrap"><div>聿馨已付 <b>${nzd(paid['聿馨']||0)}</b></div><div>宇翔已付 <b>${nzd(paid['宇翔']||0)}</b></div></div>
+    <div class="settle"><div class="d" style="opacity:.85;font-size:12px">目前結算</div><div class="big">${line}</div></div>`;
+  document.getElementById('explabel').textContent=expenses.length?`這次記下的（${expenses.length} 筆）`:'這次記下的';
+  if(!expenses.length){box.innerHTML='<div class="mut" style="margin:0 2px 8px">還沒有記帳。餐費、油錢、停車都可以加在上面。</div>';return}
+  const rows=[...expenses].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.id||0)-(b.id||0));
+  box.innerHTML='<div class="card">'+rows.map(e=>`<div class="exrow" data-id="${e.id}">
+    <div style="flex:1;min-width:0"><div><b>${esc(e.item)}</b></div>
+    <div class="mut">${esc(e.date||'')}　${esc(e.cat||'')}　${esc(e.payer)}先付　·　${esc(SPLIT_LABEL[e.split]||e.split)}</div></div>
+    <div class="amt">${nzd(e.amt)}</div>
+    <div class="ops"><button type="button" data-ee="${e.id}">編輯</button><button type="button" data-ed="${e.id}" title="刪除">刪</button></div>
+  </div>`).join('')+'</div>';
+  box.querySelectorAll('[data-ee]').forEach(b=>b.onclick=()=>editExpense(+b.dataset.ee));
+  box.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>delExpense(+b.dataset.ed));
+}
+function addExpense(){
+  const item=document.getElementById('exp-item').value.trim();
+  const amt=Number(document.getElementById('exp-amt').value);
+  const date=document.getElementById('exp-date').value||todayISO();
+  const payer=expPayer();
+  const split=document.getElementById('exp-split').value||'half';
+  const catBtn=document.querySelector('#expcats button.on');
+  const cat=catBtn?catBtn.dataset.v:'';
+  if(!item){document.getElementById('exp-item').focus();return}
+  if(!(amt>0)){document.getElementById('exp-amt').focus();return}
+  if(expEdit){
+    const i=expenses.findIndex(e=>e.id===expEdit);
+    if(i>=0)expenses[i]={...expenses[i],item,amt,date,payer,split,cat:cat||expenses[i].cat||''};
+  }else{
+    expenses.push({id:Date.now(),item,amt,date,payer,split,cat});
+  }
+  saveExpenses();resetExpForm();document.getElementById('exp-date').value=date;renderExpenses();
+}
+function editExpense(id){
+  const e=expenses.find(x=>x.id===id);if(!e)return;
+  expEdit=id;
+  document.getElementById('exp-date').value=e.date||todayISO();
+  document.getElementById('exp-item').value=e.item||'';
+  document.getElementById('exp-amt').value=e.amt;
+  document.getElementById('exp-split').value=e.split||'half';
+  document.querySelectorAll('#exp-payer button').forEach(b=>b.classList.toggle('on',b.dataset.v===e.payer));
+  document.querySelectorAll('#expcats button').forEach(b=>b.classList.toggle('on',b.dataset.v===(e.cat||'')));
+  document.getElementById('exp-add').textContent='儲存變更';
+  document.getElementById('exp-cancel').style.display='';
+  document.getElementById('exp-item').focus();
+}
+function delExpense(id){
+  if(!confirm('刪除這筆記帳？'))return;
+  expenses=expenses.filter(e=>e.id!==id);saveExpenses();
+  if(expEdit===id)resetExpForm();
+  renderExpenses();
+}
+function exportExpenses(){
+  const header=['日期','項目','分類','金額NZD','誰先付','分攤'];
+  const lines=[header.join(',')];
+  const csvEsc=v=>{v=String(v??'');return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v};
+  [...expenses].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.id||0)-(b.id||0)).forEach(e=>{
+    lines.push([e.date,e.item,e.cat||'',Number(e.amt),e.payer,SPLIT_LABEL[e.split]||e.split].map(csvEsc).join(','));
+  });
+  const {paid,net}=expNet();
+  lines.push('');
+  lines.push(['','聿馨已付','',paid['聿馨']||0,'',''].map(csvEsc).join(','));
+  lines.push(['','宇翔已付','',paid['宇翔']||0,'',''].map(csvEsc).join(','));
+  lines.push(['','結算','',net===0?'互不拖欠':(net>0?'宇翔要給聿馨 '+nzd(net):'聿馨要給宇翔 '+nzd(-net)),'',''].map(csvEsc).join(','));
+  const text=lines.join('\n');
+  const ok=()=>{const b=document.getElementById('exp-export');const t=b.textContent;b.textContent='已複製，可貼到試算表';setTimeout(()=>b.textContent=t,2000)};
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok).catch(()=>fallbackCopy(text,ok))}
+  else fallbackCopy(text,ok);
+}
+function fallbackCopy(text,ok){
+  const ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.left='-9999px';document.body.appendChild(ta);ta.select();
+  try{document.execCommand('copy');ok()}catch(e){alert('複製失敗，請手動選取文字')}
+  finally{document.body.removeChild(ta)}
+}
+function initExpenses(){
+  const cats=document.getElementById('expcats');if(!cats||cats.dataset.ready)return;
+  cats.dataset.ready='1';
+  cats.innerHTML=EXP_CATS.map(c=>`<button type="button" data-v="${c}">${c}</button>`).join('');
+  cats.querySelectorAll('button').forEach(b=>b.onclick=()=>{
+    const on=b.classList.contains('on');
+    cats.querySelectorAll('button').forEach(x=>x.classList.remove('on'));
+    if(!on){b.classList.add('on');const item=document.getElementById('exp-item');if(!item.value.trim())item.value=b.dataset.v}
+  });
+  document.querySelectorAll('#exp-payer button').forEach(b=>b.onclick=()=>{
+    document.querySelectorAll('#exp-payer button').forEach(x=>x.classList.toggle('on',x===b));
+  });
+  document.getElementById('exp-add').onclick=addExpense;
+  document.getElementById('exp-cancel').onclick=()=>{resetExpForm();document.getElementById('exp-date').value=todayISO()};
+  document.getElementById('exp-export').onclick=exportExpenses;
+  const di=document.getElementById('exp-date');if(di)di.value=todayISO();
+}
+
 function countdown(){const n=new Date();const start=new Date('2027-02-03T20:25:00+08:00');const days=Math.ceil((start-n)/864e5);const ti=todayIdx();
  document.getElementById('cd').textContent=ti>=0?`旅程第 ${ti+1} 天`:days>0?`倒數 ${days} 天`:'旅程結束 🎉'}
 
 setColor(LS.get('color',0));
 const hm=(location.hash.match(/day(\d+)/)||[])[1];
 cur=hm?Math.min(DAYS.length-1,Math.max(0,+hm-1)):Math.max(0,todayIdx());
-countdown();render();initShared();
+countdown();render();initShared();initExpenses();
 window.addEventListener('hashchange',()=>{const m=(location.hash.match(/day(\d+)/)||[])[1];if(m&&+m-1!==cur){cur=+m-1;render()}});
 </script>
 </body>
