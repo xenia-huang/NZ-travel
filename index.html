@@ -592,32 +592,18 @@ function pk(x,rm){const ok=!!packDone[x];return `<label class="pk ${ok?'ok':''}"
 document.getElementById('packadd').onclick=()=>{const i=document.getElementById('packin');const v=i.value.trim();if(v&&!packExtra.includes(v)){packExtra.push(v);LS.set('packx',packExtra)}i.value='';renderPack()};
 
 // ================= GAMES (offline) =================
-const GAMES=[['g2048','🔢','2048','滑動合併數字'],['gmem','🃏','翻牌配對','紐西蘭主題記憶'],['gttt','⭕','井字棋','對電腦或兩人'],['gsnake','🐍','貪食蛇','滑動或按方向鍵']];
+const GAMES=[['gsheep','🐑','趕羊進圈','當牧羊犬把羊趕進羊圈'],['gsky','🪂','瓦納卡跳傘','收集圈圈、閃開鳥'],['ghorse','🐎','Glenorchy 騎馬','點一下跳過障礙'],['gmem','🃏','翻牌配對','紐西蘭主題記憶']];
 let gStop=null;
 function renderGames(){if(gStop){gStop();gStop=null}
  document.getElementById('gamebox').innerHTML='<div class="gpick">'+GAMES.map(g=>`<button class="gcard" data-g="${g[0]}"><i>${g[1]}</i><b>${g[2]}</b><span>${g[3]}</span></button>`).join('')+'</div><div class="mut" style="margin:10px 2px">遊戲完全在手機上跑、不用網路。在沒訊號的地方（例如往米佛峽灣的路上）之前，先把這頁打開放著。</div>';
  document.querySelectorAll('.gcard').forEach(b=>b.onclick=()=>startGame(b.dataset.g))}
 function gHead(title,extra){return `<div class="ghead"><button class="btn" id="gback">‹ 遊戲</button><b>${title}</b><span id="gscore" style="margin-left:auto">${extra||''}</span></div>`}
-function startGame(id){if(gStop){gStop();gStop=null}const box=document.getElementById('gamebox');({g2048,gmem,gttt,gsnake})[id](box);document.getElementById('gback').onclick=renderGames}
+function startGame(id){if(gStop){gStop();gStop=null}const box=document.getElementById('gamebox');({gsheep,gsky,ghorse,gmem})[id](box);document.getElementById('gback').onclick=renderGames}
 function swipe(el,cb){let x0,y0;el.addEventListener('touchstart',e=>{x0=e.touches[0].clientX;y0=e.touches[0].clientY},{passive:true});
  el.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;cb(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));x0=null})}
 function keys(cb){const h=e=>{const m={ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D'}[e.key];if(m){e.preventDefault();cb(m)}};window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h)}
 const pad=()=>`<div class="pad"><span></span><button data-k="U">▲</button><span></span><button data-k="L">◀</button><button data-k="D">▼</button><button data-k="R">▶</button></div>`;
 function bindPad(cb){document.querySelectorAll('.pad button').forEach(b=>b.onclick=()=>cb(b.dataset.k))}
-
-// ---- 2048 ----
-function g2048(box){let g,score,best=LS.get('best2048',0),over;
- const init=()=>{g=Array(16).fill(0);score=0;over=false;add();add();draw()};
- const add=()=>{const e=g.map((v,i)=>v?-1:i).filter(i=>i>=0);if(e.length)g[e[Math.random()*e.length|0]]=Math.random()<.9?2:4};
- const line=a=>{a=a.filter(Boolean);for(let i=0;i<a.length-1;i++)if(a[i]===a[i+1]){a[i]*=2;score+=a[i];a.splice(i+1,1)}while(a.length<4)a.push(0);return a};
- const move=d=>{if(over)return;const old=g.join();for(let r=0;r<4;r++){let idx=[0,1,2,3].map(c=>d==='L'||d==='R'?r*4+c:c*4+r);if(d==='R'||d==='D')idx.reverse();const res=line(idx.map(i=>g[i]));idx.forEach((i,k)=>g[i]=res[k])}
-  if(g.join()!==old){add();if(score>best){best=score;LS.set('best2048',best)}}
-  over=!g.includes(0)&&![0,1,2,3].some(r=>[0,1,2].some(c=>g[r*4+c]===g[r*4+c+1]||g[c*4+r]===g[(c+1)*4+r]));draw()};
- const col=v=>v?`color-mix(in srgb,var(--ac) ${Math.min(95,12+Math.log2(v)*8)}%,#fff)`:'rgba(0,0,0,.05)';
- const draw=()=>{if(!box.querySelector('#b2048'))return;box.querySelector('#b2048').innerHTML=g.map(v=>`<div class="t2" style="background:${col(v)};color:${v>=16?'#fff':'var(--tx)'};font-size:${v>=1024?18:v>=128?22:26}px">${v||''}</div>`).join('');
-  document.getElementById('gscore').textContent=`分數 ${score}　最高 ${best}`;box.querySelector('#gmsg').textContent=over?'沒有步了！按「重來」':(g.includes(2048)?'🎉 2048！可以繼續挑戰':'')};
- box.innerHTML=gHead('2048')+`<div class="board" id="b2048" style="grid-template-columns:repeat(4,1fr)"></div><div id="gmsg" class="gmsg"></div>${pad()}<div style="text-align:center"><button class="btn pri" id="gre">重來</button></div>`;
- swipe(box.querySelector('#b2048'),move);bindPad(move);gStop=keys(move);box.querySelector('#gre').onclick=init;init()}
 
 // ---- memory ----
 function gmem(box){const E=['🥝','🐑','🏔️','🐧','⛵','🍷','🌌','🚁'];let cards,open,done,moves,lock,t0,tm;
@@ -632,39 +618,93 @@ function gmem(box){const E=['🥝','🐑','🏔️','🐧','⛵','🍷','🌌','
  box.innerHTML=gHead('翻牌配對')+`<div class="board" id="bm" style="grid-template-columns:repeat(4,1fr)"></div><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">重來</button></div>`;
  box.querySelector('#gre').onclick=init;gStop=()=>clearInterval(tm);init()}
 
-// ---- tic tac toe ----
-function gttt(box){let b,turn,mode='ai',win,score=LS.get('ttt',{X:0,O:0,D:0});const L=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
- const W=a=>{for(const[x,y,z]of L)if(a[x]&&a[x]===a[y]&&a[x]===a[z])return a[x];return a.includes('')?null:'D'};
- const mm=(a,p)=>{const w=W(a);if(w)return{s:w==='O'?1:w==='X'?-1:0};let best={s:p==='O'?-2:2};a.forEach((v,i)=>{if(v)return;a[i]=p;const r=mm(a,p==='O'?'X':'O');a[i]='';if(p==='O'?r.s>best.s:r.s<best.s)best={s:r.s,i}});return best};
- const init=()=>{b=Array(9).fill('');turn='X';win=null;draw()};
- const end=()=>{win=W(b);if(win){score[win]++;LS.set('ttt',score)}};
- const play=i=>{if(win||b[i])return;b[i]=turn;end();turn=turn==='X'?'O':'X';draw();
-  if(!win&&mode==='ai'&&turn==='O'){setTimeout(()=>{if(!box.querySelector('#bt'))return;const e=b.map((v,k)=>v?-1:k).filter(k=>k>=0);const k=Math.random()<.15?e[Math.random()*e.length|0]:mm(b,'O').i;b[k]='O';end();turn='X';draw()},300)}};
- const draw=()=>{if(!box.querySelector('#bt'))return;box.querySelector('#bt').innerHTML=b.map((v,i)=>`<button class="tc" data-i="${i}" style="color:${v==='X'?'var(--ac)':'#b45309'}">${v==='X'?'✕':v==='O'?'◯':''}</button>`).join('');
-  box.querySelectorAll('.tc').forEach(x=>x.onclick=()=>play(+x.dataset.i));
-  document.getElementById('gscore').textContent=`✕ ${score.X}　◯ ${score.O}　平 ${score.D}`;
-  box.querySelector('#gmsg').textContent=win?(win==='D'?'平手！':(win==='X'?'✕ 贏了！':'◯ 贏了！')):(mode==='ai'?'你是 ✕':(turn==='X'?'輪到 ✕':'輪到 ◯'));
-  box.querySelectorAll('[data-m]').forEach(x=>x.classList.toggle('pri',x.dataset.m===mode))};
- box.innerHTML=gHead('井字棋')+`<div style="display:flex;gap:6px;justify-content:center;margin-bottom:10px"><button class="btn" data-m="ai">對電腦</button><button class="btn" data-m="pvp">兩人</button></div><div class="board" id="bt" style="grid-template-columns:repeat(3,1fr);max-width:300px"></div><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">再一局</button></div>`;
- box.querySelectorAll('[data-m]').forEach(x=>x.onclick=()=>{mode=x.dataset.m;init()});box.querySelector('#gre').onclick=init;init()}
+// ---- shared canvas helpers ----
+function gCanvas(box,W,H){const cv=box.querySelector('canvas');const px=Math.min(420,box.clientWidth||360);cv.width=px*2;cv.height=Math.round(px*2*H/W);cv.style.width=px+'px';cv.style.maxWidth='100%';const cx=cv.getContext('2d');const k=cv.width/W;cx.setTransform(k,0,0,k,0,0);return{cv,cx,k}}
+function gPtr(cv,W,cb,up){const f=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;if(!t)return;cb((t.clientX-r.left)*W/r.width,(t.clientY-r.top)*W/r.width)};
+ cv.addEventListener('touchstart',e=>{e.preventDefault();f(e)},{passive:false});cv.addEventListener('touchmove',e=>{e.preventDefault();f(e)},{passive:false});
+ cv.addEventListener('mousemove',e=>{if(e.buttons)f(e)});cv.addEventListener('mousedown',f);if(up){cv.addEventListener('touchend',up);cv.addEventListener('mouseup',up)}}
+function emo(cx,e,x,y,s,flip){cx.save();cx.font=`${s}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.translate(x,y);if(flip)cx.scale(-1,1);cx.fillText(e,0,0);cx.restore()}
+function gLoop(fn){let id,last=performance.now();const t=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;if(fn(dt)!==false)id=requestAnimationFrame(t)};id=requestAnimationFrame(t);return()=>cancelAnimationFrame(id)}
 
-// ---- snake ----
-function gsnake(box){const N=16;let sn,dir,nd,food,score,best=LS.get('bestsnake',0),tm,alive,cv,cx,sz;
- box.innerHTML=gHead('貪食蛇')+`<canvas id="cs" class="board" style="display:block;padding:0;aspect-ratio:1/1;width:100%;max-width:340px"></canvas><div id="gmsg" class="gmsg"></div>${pad()}<div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
- cv=box.querySelector('#cs');const px=Math.min(340,box.clientWidth||340);cv.width=cv.height=px*2;cx=cv.getContext('2d');sz=cv.width/N;
- const ac=getComputedStyle(document.documentElement).getPropertyValue('--ac').trim();
- const place=()=>{do{food=[Math.random()*N|0,Math.random()*N|0]}while(sn.some(p=>p[0]===food[0]&&p[1]===food[1]))};
- const draw=()=>{if(!cv.isConnected)return;cx.fillStyle='#f5f0ea';cx.fillRect(0,0,cv.width,cv.height);cx.font=`${sz*.85}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.fillText('🥝',food[0]*sz+sz/2,food[1]*sz+sz/2+2);
-  sn.forEach((p,i)=>{cx.fillStyle=i?ac:'#3f2d1f';cx.beginPath();cx.roundRect(p[0]*sz+2,p[1]*sz+2,sz-4,sz-4,sz*.3);cx.fill()});
-  document.getElementById('gscore').textContent=`分數 ${score}　最高 ${best}`};
- const step=()=>{dir=nd;const h=[sn[0][0]+dir[0],sn[0][1]+dir[1]];
-  if(h[0]<0||h[1]<0||h[0]>=N||h[1]>=N||sn.some(p=>p[0]===h[0]&&p[1]===h[1])){alive=false;clearInterval(tm);if(score>best){best=score;LS.set('bestsnake',best)}box.querySelector('#gmsg').textContent='撞到了！按「開始」再玩';box.querySelector('#gre').textContent='開始';draw();return}
-  sn.unshift(h);if(h[0]===food[0]&&h[1]===food[1]){score++;place();clearInterval(tm);tm=setInterval(step,Math.max(70,160-score*4))}else sn.pop();draw()};
- const init=()=>{sn=[[8,8],[7,8],[6,8]];dir=nd=[1,0];score=0;alive=true;place();clearInterval(tm);tm=setInterval(step,160);box.querySelector('#gmsg').textContent='';box.querySelector('#gre').textContent='重來';draw()};
- const turn=k=>{const d={U:[0,-1],D:[0,1],L:[-1,0],R:[1,0]}[k];if(d[0]===-dir[0]&&d[1]===-dir[1])return;nd=d};
- swipe(cv,turn);bindPad(turn);const uk=keys(turn);box.querySelector('#gre').onclick=init;
- sn=[[8,8],[7,8],[6,8]];dir=nd=[1,0];score=0;place();draw();box.querySelector('#gmsg').textContent='按「開始」，滑動或用方向鍵控制';
- gStop=()=>{clearInterval(tm);uk()}}
+// ---- 趕羊進圈 ----
+function gsheep(box){const W=360,H=480,PEN={x:110,y:14,w:140,h:86},N=8;let sh,dog,t,best=LS.get('bestsheep',null),run=false,stop=null;
+ box.innerHTML=gHead('趕羊進圈')+`<canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ const {cv,cx}=gCanvas(box,W,H);const msg=box.querySelector('#gmsg');
+ const inPen=s=>s.x>PEN.x+8&&s.x<PEN.x+PEN.w-8&&s.y>PEN.y+8&&s.y<PEN.y+PEN.h-8;
+ const init=()=>{sh=Array.from({length:N},()=>({x:30+Math.random()*300,y:220+Math.random()*230,vx:0,vy:0,ok:false}));dog={x:180,y:470};t=0;run=true;msg.textContent='用手指當牧羊犬，把羊趕進上面的羊圈';box.querySelector('#gre').textContent='重來';if(stop)stop();stop=gLoop(step)};
+ gPtr(cv,W,(x,y)=>{dog.x=x;dog.y=y});
+ const draw=()=>{cx.fillStyle='#cfe8b4';cx.fillRect(0,0,W,H);
+  cx.fillStyle='#e9f5d8';cx.fillRect(PEN.x,PEN.y,PEN.w,PEN.h);cx.strokeStyle='#8b6b4f';cx.lineWidth=5;cx.beginPath();cx.moveTo(PEN.x,PEN.y+PEN.h);cx.lineTo(PEN.x,PEN.y);cx.lineTo(PEN.x+PEN.w,PEN.y);cx.lineTo(PEN.x+PEN.w,PEN.y+PEN.h);cx.stroke();
+  cx.fillStyle='#8b6b4f';cx.font='bold 13px sans-serif';cx.textAlign='center';cx.fillText('羊圈',PEN.x+PEN.w/2,PEN.y+PEN.h+16);
+  sh.forEach(s=>emo(cx,'🐑',s.x,s.y,30,s.vx>0));emo(cx,'🐕',dog.x,dog.y,34);
+  const n=sh.filter(s=>s.ok).length;document.getElementById('gscore').textContent=`${n}/${N} 隻　${t.toFixed(1)}s${best?'　最快 '+best+'s':''}`};
+ const step=dt=>{if(!cv.isConnected)return false;t+=dt;
+  sh.forEach(s=>{if(s.ok){s.vx*=.9;s.vy*=.9;s.x=Math.min(PEN.x+PEN.w-14,Math.max(PEN.x+14,s.x+s.vx*dt));s.y=Math.min(PEN.y+PEN.h-14,Math.max(PEN.y+14,s.y+s.vy*dt));return}
+   const dx=s.x-dog.x,dy=s.y-dog.y,d=Math.hypot(dx,dy)||1;
+   if(d<95){const f=(95-d)*9;s.vx+=dx/d*f*dt;s.vy+=dy/d*f*dt}else{s.vx+=(Math.random()-.5)*60*dt;s.vy+=(Math.random()-.5)*60*dt}
+   sh.forEach(o=>{if(o===s)return;const ex=s.x-o.x,ey=s.y-o.y,e=Math.hypot(ex,ey)||1;if(e<26){s.vx+=ex/e*40*dt*10;s.vy+=ey/e*40*dt*10}});
+   s.vx*=.94;s.vy*=.94;const sp=Math.hypot(s.vx,s.vy);if(sp>170){s.vx*=170/sp;s.vy*=170/sp}
+   const ox=s.x,oy=s.y;s.x+=s.vx*dt;s.y+=s.vy*dt;
+   // fences: walls on left, top, right of pen
+   const insideX=s.x>PEN.x&&s.x<PEN.x+PEN.w,insideY=s.y>PEN.y&&s.y<PEN.y+PEN.h;
+   if(insideY&&((ox<=PEN.x)!==(s.x<=PEN.x)||(ox>=PEN.x+PEN.w)!==(s.x>=PEN.x+PEN.w))){s.x=ox;s.vx=-s.vx*.5}
+   if(insideX&&(oy<=PEN.y)!==(s.y<=PEN.y)){s.y=oy;s.vy=-s.vy*.5}
+   if(s.x<14){s.x=14;s.vx=Math.abs(s.vx)}if(s.x>W-14){s.x=W-14;s.vx=-Math.abs(s.vx)}if(s.y<14){s.y=14;s.vy=Math.abs(s.vy)}if(s.y>H-14){s.y=H-14;s.vy=-Math.abs(s.vy)}
+   if(inPen(s))s.ok=true});
+  draw();
+  if(sh.every(s=>s.ok)){run=false;const r=+t.toFixed(1);if(!best||r<best){best=r;LS.set('bestsheep',r)}msg.textContent=`🎉 全部進圈！${r} 秒`;box.querySelector('#gre').textContent='再玩一次';draw();return false}};
+ box.querySelector('#gre').onclick=init;
+ sh=Array.from({length:N},()=>({x:30+Math.random()*300,y:220+Math.random()*230,vx:0,vy:0,ok:false}));dog={x:180,y:470};t=0;draw();msg.textContent='按「開始」，用手指當牧羊犬趕羊';
+ gStop=()=>{if(stop)stop()}}
+
+// ---- 瓦納卡跳傘 ----
+function gsky(box){const W=360,H=540,PY=130;let p,obj,alt,score,lives,spd,tx,best=LS.get('bestsky',0),stop=null,acc=0,inv=0;
+ box.innerHTML=gHead('跳傘')+`<canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><div id="gmsg" class="gmsg"></div><div class="pad" style="grid-template-columns:repeat(2,64px)"><button data-k="L">◀</button><button data-k="R">▶</button></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ const {cv,cx}=gCanvas(box,W,H);const msg=box.querySelector('#gmsg');
+ gPtr(cv,W,x=>{tx=x});const mv=k=>{if(k==='L')tx=Math.max(20,tx-60);if(k==='R')tx=Math.min(W-20,tx+60)};bindPad(mv);const uk=keys(mv);
+ const init=()=>{p=W/2;tx=W/2;obj=[];alt=15000;score=0;lives=3;spd=170;acc=0;inv=0;msg.textContent='左右移動：收集 ⭕ 加分，閃開 🐦';box.querySelector('#gre').textContent='重來';if(stop)stop();stop=gLoop(step)};
+ const draw=()=>{const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7cc6f2');g.addColorStop(1,alt<4000?'#bfe3c4':'#d8f0ff');cx.fillStyle=g;cx.fillRect(0,0,W,H);
+  if(alt<5000){const gy=H-(5000-Math.max(alt,0))/5000*120;cx.fillStyle='#4a90a8';cx.fillRect(0,gy,W,H-gy);cx.fillStyle='#6a5a4a';cx.beginPath();cx.moveTo(0,gy);cx.lineTo(70,gy-50);cx.lineTo(150,gy);cx.lineTo(240,gy-70);cx.lineTo(330,gy);cx.lineTo(W,gy-30);cx.lineTo(W,gy);cx.fill()}
+  obj.forEach(o=>{if(o.t==='c'){cx.globalAlpha=.8;emo(cx,'☁️',o.x,o.y,52);cx.globalAlpha=1}else emo(cx,o.t==='r'?'⭕':'🐦',o.x,o.y,o.t==='r'?34:30,o.vx>0)});
+  if(!(inv>0&&Math.floor(inv*10)%2))emo(cx,'🪂',p,PY,40);
+  document.getElementById('gscore').textContent=`${Math.max(0,Math.round(alt)).toLocaleString()}ft ⭕${score} ${'❤️'.repeat(lives)} 最高${best}`};
+ const end=(t)=>{if(score>best){best=score;LS.set('bestsky',best)}msg.textContent=t;box.querySelector('#gre').textContent='再跳一次';draw()};
+ const step=dt=>{if(!cv.isConnected)return false;
+  p+=(tx-p)*Math.min(1,dt*8);alt-=dt*420;spd+=dt*6;inv=Math.max(0,inv-dt);acc+=dt;
+  if(acc>.45){acc=0;const r=Math.random();obj.push(r<.55?{t:'r',x:30+Math.random()*300,y:H+30}:r<.85?{t:'b',x:Math.random()<.5?-20:W+20,y:H+30,vx:0}:{t:'c',x:Math.random()*W,y:H+40});const b=obj[obj.length-1];if(b.t==='b')b.vx=b.x<0?60+Math.random()*60:-(60+Math.random()*60)}
+  obj.forEach(o=>{o.y-=spd*dt*(o.t==='c'?1.3:1);if(o.vx)o.x+=o.vx*dt});
+  obj=obj.filter(o=>{if(o.y<-40)return false;const d=Math.hypot(o.x-p,o.y-PY);
+   if(o.t==='r'&&d<30){score++;return false}
+   if(o.t==='b'&&d<28&&inv<=0){lives--;inv=1.2;if(navigator.vibrate)navigator.vibrate(80);return false}return true});
+  draw();
+  if(lives<=0){end(`撞到太多鳥了！收集 ${score} 個 ⭕`);return false}
+  if(alt<=0){alt=0;draw();end(`🪂 開傘，安全降落瓦納卡！收集 ${score} 個 ⭕`);return false}};
+ box.querySelector('#gre').onclick=init;p=W/2;tx=W/2;obj=[];alt=15000;score=0;lives=3;draw();msg.textContent='從 15,000 呎跳下去！按「開始」';
+ gStop=()=>{if(stop)stop();uk()}}
+
+// ---- Glenorchy 騎馬 ----
+function ghorse(box){const W=360,H=220,GY=180,HX=70;let y,vy,obs,spd,dist,best=LS.get('besthorse',0),stop=null,next,alive=false,mx=0;
+ box.innerHTML=gHead('Glenorchy 騎馬')+`<canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><div id="gmsg" class="gmsg"></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ const {cv,cx}=gCanvas(box,W,H);const msg=box.querySelector('#gmsg');
+ const jump=()=>{if(!alive){init();return}if(y>=GY-1)vy=-430};
+ gPtr(cv,W,jump);const kh=e=>{if(e.key===' '||e.key==='ArrowUp'){e.preventDefault();jump()}};window.addEventListener('keydown',kh);
+ const init=()=>{y=GY;vy=0;obs=[];spd=200;dist=0;next=1;mx=0;alive=true;msg.textContent='點畫面跳過石頭、溪流和羊';box.querySelector('#gre').textContent='重來';if(stop)stop();stop=gLoop(step)};
+ const draw=()=>{cx.fillStyle='#bfe3f5';cx.fillRect(0,0,W,H);
+  cx.fillStyle='#e8eef2';for(let i=-1;i<4;i++){const bx=i*160-(mx*.3%160);cx.beginPath();cx.moveTo(bx,GY-20);cx.lineTo(bx+80,40);cx.lineTo(bx+160,GY-20);cx.fill()}
+  cx.fillStyle='#8aa0ad';for(let i=-1;i<5;i++){const bx=i*120-(mx*.5%120);cx.beginPath();cx.moveTo(bx,GY-10);cx.lineTo(bx+60,90);cx.lineTo(bx+120,GY-10);cx.fill()}
+  cx.fillStyle='#9cc97a';cx.fillRect(0,GY+12,W,H-GY-12);
+  obs.forEach(o=>{if(o.t==='w'){cx.fillStyle='#4aa3d8';cx.fillRect(o.x-o.w/2,GY+10,o.w,8);emo(cx,'🌊',o.x,GY,24)}else emo(cx,o.e,o.x,GY,o.s)});
+  emo(cx,'🐎',HX,y-6,46,true);
+  document.getElementById('gscore').textContent=`${Math.floor(dist)} m　最高 ${best} m`};
+ const step=dt=>{if(!cv.isConnected)return false;
+  vy+=1300*dt;y=Math.min(GY,y+vy*dt);if(y>=GY)vy=0;spd+=dt*5;dist+=spd*dt/10;mx+=spd*dt;
+  next-=dt;if(next<=0){const r=Math.random();obs.push(r<.45?{t:'r',e:'🪨',s:30,x:W+30,w:22}:r<.75?{t:'w',x:W+40,w:46}:{t:'s',e:'🐑',s:32,x:W+30,w:24});next=.9+Math.random()*1.1-Math.min(.5,spd/1200)}
+  obs.forEach(o=>o.x-=spd*dt);obs=obs.filter(o=>o.x>-60);
+  const hit=obs.some(o=>Math.abs(o.x-HX)<(o.w/2+12)&&y>GY-(o.t==='w'?14:24));
+  draw();
+  if(hit){alive=false;const d=Math.floor(dist);if(d>best){best=d;LS.set('besthorse',d)}msg.textContent=`摔馬了！跑了 ${d} 公尺。點畫面或按「重來」`;box.querySelector('#gre').textContent='重來';draw();return false}};
+ box.querySelector('#gre').onclick=init;y=GY;vy=0;obs=[];dist=0;draw();msg.textContent='按「開始」或點畫面出發';
+ gStop=()=>{if(stop)stop();window.removeEventListener('keydown',kh)}}
 
 
 // ---------- on-trip expenses (NZ$, this device only) ----------
