@@ -173,6 +173,13 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 
 <main>
   <section class="view on" id="v-day">
+    <div id="tripv" hidden>
+    <a class="gbtn" id="gtrip" target="_blank" rel="noopener" style="margin-bottom:8px"><i>🗺️</i><div><b>Google Maps 開整趟路線</b><span>11 個住宿／重點站，皇后鎮 → 基督城</span></div><em>›</em></a>
+    <div class="sec">點日期看那天的行程</div>
+    <div class="mapwrap"><iframe id="bigmap" title="整趟 Google 地圖路線" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
+    <div class="dgrid" id="dgrid"></div>
+    </div>
+    <div id="dayv">
     <div class="hero" id="hero"></div>
     <a class="gbtn" id="groute" target="_blank" rel="noopener"></a>
     <div class="mapwrap">
@@ -182,6 +189,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
     </div>
     <div class="sec" id="tlh">行程 <span id="nstat" style="color:var(--warn);font-weight:400"></span></div>
     <div class="tl" id="tl"></div>
+    </div>
   </section>
 
   <section class="view" id="v-wx">
@@ -193,12 +201,6 @@ nav.tab button.on{color:var(--ac);font-weight:700}
     <div class="mut" style="margin:8px 2px 14px">資料來源 Open-Meteo，需要網路；最後一次查到的結果會存在手機，沒訊號時先顯示舊的。預報只到未來 7 天，出發前一週才看得到旅行那幾天。</div>
   </section>
 
-  <section class="view" id="v-map">
-    <a class="gbtn" id="gtrip" target="_blank" rel="noopener" style="margin-bottom:8px"><i>🗺️</i><div><b>Google Maps 開整趟路線</b><span>11 個住宿／重點站，皇后鎮 → 基督城</span></div><em>›</em></a>
-    <div class="sec">點日期只看那天</div>
-    <div class="mapwrap"><iframe id="bigmap" title="整趟 Google 地圖路線" loading="lazy" referrerpolicy="no-referrer-when-downgrade" allowfullscreen></iframe></div>
-    <div class="dgrid" id="dgrid"></div>
-  </section>
 
   <section class="view" id="v-cost">
     <div class="sec">旅途記帳（紐幣 NZ$）</div>
@@ -266,7 +268,6 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 <nav class="tab">
   <button data-v="day" class="on"><i>🗓️</i>每日行程</button>
   <button data-v="wx"><i>🌤️</i>天氣</button>
-  <button data-v="map"><i>🗺️</i>整趟地圖</button>
   <button data-v="cost"><i>💰</i>費用</button>
   <button data-v="pack"><i>🧳</i>打包</button>
   <button data-v="game"><i>🎮</i>遊戲</button>
@@ -502,16 +503,17 @@ function spotsFor(D,it){
   return list.map(s=>`<div class="ispot">${s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:''}${list.length>1||!it.title.includes(s.title.split(' ')[0])?`<h4>${esc(s.title)}</h4>`:''}<p>${esc(s.text)}</p></div>`).join('');
 }
 
-function renderChips(){const ti=todayIdx();document.getElementById('chips').innerHTML=DAYS.map((x,i)=>`<div class="chip ${i===cur?'on':''} ${i===ti?'today':''}" data-i="${i}" style="${i===cur?'':`background:color-mix(in srgb,var(--ac) ${8+i*4}%,#fff);${i>9?'color:#fff':''}`}"><b>D${x.d}</b><span>${+x.date.slice(5,7)}/${+x.date.slice(8)}（${x.w}）</span></div>`).join('');
+function renderChips(){const ti=todayIdx();document.getElementById('chips').innerHTML=`<div class="chip ${cur<0?'on':''}" data-i="-1"><b>🗺️ 全程</b><span>整趟地圖</span></div>`+DAYS.map((x,i)=>`<div class="chip ${i===cur?'on':''} ${i===ti?'today':''}" data-i="${i}" style="${i===cur?'':`background:color-mix(in srgb,var(--ac) ${8+i*4}%,#fff);${i>9?'color:#fff':''}`}"><b>D${x.d}</b><span>${+x.date.slice(5,7)}/${+x.date.slice(8)}（${x.w}）</span></div>`).join('');
  document.querySelectorAll('.chip').forEach(c=>c.onclick=()=>go(+c.dataset.i));
  const on=document.querySelector('.chip.on');on&&on.scrollIntoView({inline:'center',block:'nearest'})}
 
-function go(i){cur=i;try{history.replaceState(null,'','#day'+DAYS[i].d)}catch(e){location.hash='day'+DAYS[i].d}render();window.scrollTo({top:0})}
+function go(i){cur=i;const h=i<0?'#all':'#day'+DAYS[i].d;try{history.replaceState(null,'',h)}catch(e){location.hash=h.slice(1)}render();window.scrollTo({top:0})}
 
 function navUrl(it){return it.u&&it.u.startsWith('https://maps.app')?it.u:(it.q?NAV(it.q):(it.u||''))}
 
 function render(){
- renderChips();const D=DAYS[cur];const drives=D.items.filter(x=>x.drive);
+ renderChips();const ov=cur<0;document.getElementById('tripv').hidden=!ov;document.getElementById('dayv').hidden=ov;if(ov){renderBig();return}
+ const D=DAYS[cur];const drives=D.items.filter(x=>x.drive);
  const mn=drives.reduce((a,b)=>a+b.min,0);
  const stay=D.items.filter(x=>x.k==='stay').pop();
  const ti=todayIdx();const tag=cur===ti?'今天 · ':'';
@@ -569,7 +571,7 @@ function renderTodo(){
 function renderSw(){const ci=LS.get('color',0);document.getElementById('sw').innerHTML=COLORS.map((c,i)=>`<button style="background:${c[0]}" class="${i===ci?'on':''}" data-c="${i}"></button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>setColor(+b.dataset.c))}
 
 function show(v){document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));if(v!=='game'&&gStop){gStop();gStop=null}
-({wx:renderWx,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
+({wx:renderWx,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
 document.getElementById('gear').onclick=()=>show('set');
 document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 if(0)document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));if(b.dataset.v==='todo')renderTodo();document.getElementById('chips').style.display=b.dataset.v==='day'?'':'none';window.scrollTo({top:0})});
@@ -590,8 +592,8 @@ function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);
 let bigSel=null;document.getElementById('gtrip').href=GR(TRIP);
 function renderBig(){const dc=i=>`color-mix(in srgb,var(--ac) ${30+i*5}%,#fff)`;
  setSrc(document.getElementById('bigmap'),bigSel===null?EMB(ETRIP):EMB(EROUTES[DAYS[bigSel].d]||[DAYS[bigSel].region]));
- document.getElementById('dgrid').innerHTML=DAYS.map((D,i)=>`<div class="dg ${bigSel===i?'sel':''}" data-g="${i}" style="background:${dc(i)};color:${i>5?'#fff':'var(--tx)'}"><b>D${D.d} · ${+D.date.slice(5,7)}/${+D.date.slice(8)}（${D.w}）</b>${D.region}</div>`).join('')+`<div class="dg" data-g="all" style="background:var(--card);border-color:var(--line)"><b>顯示全部</b>整趟路線</div><div class="dg" data-g="go" style="background:var(--card);border-color:var(--line)"><b>看選取日行程 ›</b>${bigSel!==null?'D'+DAYS[bigSel].d:'先選一天'}</div>`;
- document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=b.dataset.g;if(g==='all')bigSel=null;else if(g==='go'){if(bigSel!==null){show('day');go(bigSel)}return}else bigSel=(bigSel===+g?null:+g);renderBig()});}
+ document.getElementById('dgrid').innerHTML=DAYS.map((D,i)=>`<div class="dg ${bigSel===i?'sel':''}" data-g="${i}" style="background:${dc(i)};color:${i>5?'#fff':'var(--tx)'}"><b>D${D.d} · ${+D.date.slice(5,7)}/${+D.date.slice(8)}（${D.w}）</b>${D.region}</div>`) .join('');
+ document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>go(+b.dataset.g));}
 
 const PACK0=[['證件',['護照 ×2','台灣駕照 ×2','國際駕照 ×2（取車兩人都要）','NZeTA 確認信','信用卡（螢火蟲洞、停車只收卡）','備用信用卡','少量紐幣現金','訂房、租車確認信（手機離線存一份）','旅遊保險資料']],
 ['衣物',['短袖 ×4','薄長袖 ×3','內衣褲、襪子 ×7','睡衣','好走的鞋','拖鞋','洗衣袋（中途要洗衣）']],
@@ -899,9 +901,9 @@ function countdown(){const n=new Date();const start=new Date('2027-02-03T20:25:0
 
 setColor(LS.get('color',0));
 const hm=(location.hash.match(/day(\d+)/)||[])[1];
-cur=hm?Math.min(DAYS.length-1,Math.max(0,+hm-1)):Math.max(0,todayIdx());
+cur=location.hash==='#all'?-1:hm?Math.min(DAYS.length-1,Math.max(0,+hm-1)):Math.max(0,todayIdx());
 countdown();render();initShared();initExpenses();
-window.addEventListener('hashchange',()=>{const m=(location.hash.match(/day(\d+)/)||[])[1];if(m&&+m-1!==cur){cur=+m-1;render()}});
+window.addEventListener('hashchange',()=>{if(location.hash==='#all'){if(cur!==-1){cur=-1;render()}return}const m=(location.hash.match(/day(\d+)/)||[])[1];if(m&&+m-1!==cur){cur=+m-1;render()}});
 </script>
 </body>
 </html>
