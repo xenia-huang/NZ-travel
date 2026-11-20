@@ -93,6 +93,8 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .mc.up{background:var(--card);transform:rotateY(0)}.mc.ok{opacity:.55}
 .tc{aspect-ratio:1/1;border:0;border-radius:12px;background:var(--card);font-size:44px;font-weight:700;cursor:pointer}
 .gmsg{text-align:center;min-height:22px;margin:10px 0 4px;font-weight:700;color:var(--ac)}
+#v-game,#v-game *{touch-action:manipulation;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+button{touch-action:manipulation}
 .pad{display:grid;grid-template-columns:repeat(3,60px);gap:6px;justify-content:center;margin:6px 0 12px}
 .pad.big{margin:4px 0 6px}.pad.big button{height:60px;font-size:26px;border-radius:14px}
 .pad button{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;color:var(--tx)}
@@ -654,7 +656,9 @@ function swipe(el,cb){let x0,y0;el.addEventListener('touchstart',e=>{x0=e.touche
  el.addEventListener('touchend',e=>{if(x0==null)return;const dx=e.changedTouches[0].clientX-x0,dy=e.changedTouches[0].clientY-y0;if(Math.max(Math.abs(dx),Math.abs(dy))<24)return;cb(Math.abs(dx)>Math.abs(dy)?(dx>0?'R':'L'):(dy>0?'D':'U'));x0=null})}
 function keys(cb){const h=e=>{const m={ArrowLeft:'L',ArrowRight:'R',ArrowUp:'U',ArrowDown:'D'}[e.key];if(m){e.preventDefault();cb(m)}};window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h)}
 const pad=()=>`<div class="pad"><span></span><button data-k="U">▲</button><span></span><button data-k="L">◀</button><button data-k="D">▼</button><button data-k="R">▶</button></div>`;
-function bindPad(cb){document.querySelectorAll('.pad button').forEach(b=>b.onclick=()=>cb(b.dataset.k))}
+function bindPad(cb){document.querySelectorAll('.pad button').forEach(b=>{let t=null;const stop=()=>{clearInterval(t);t=null};
+ b.addEventListener('pointerdown',e=>{e.preventDefault();cb(b.dataset.k);stop();t=setInterval(()=>{if(!b.isConnected)return stop();cb(b.dataset.k)},140)});
+ ['pointerup','pointerleave','pointercancel'].forEach(ev=>b.addEventListener(ev,stop));b.addEventListener('contextmenu',e=>e.preventDefault())})}
 
 // ---- memory ----
 function gmem(box){const E=['🥝','🐑','🏔️','🐧','⛵','🍷','🌌','🚁'];let cards,open,done,moves,lock,t0,tm;
