@@ -559,7 +559,7 @@ function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);
  renderExpenses();
   const cats={};COSTS.forEach(c=>cats[c[1]]=(cats[c[1]]||0)+c[2]);const mx=Math.max(...Object.values(cats));
  document.getElementById('costcat').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${k}</span><b>${nt(v)} <span class="mut">${Math.round(v/tot*100)}%</span></b></div><div class="bar" style="width:${v/mx*100}%"></div></div>`).join('');
- document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map(c=>`<div class="crow"><span><span class="mut">D${c[3]}</span> ${c[0]}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
+ document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map((c,i)=>[c,i]).sort((x,y)=>x[0][3]-y[0][3]||x[1]-y[1]).map(([c])=>{const D=DAYS.find(x=>x.d===c[3]);return [c,D?`${+D.date.slice(5,7)}/${+D.date.slice(8)}`:'']}).map(([c,dt])=>`<div class="crow"><span><span class="mut">D${c[3]} ${dt}</span> ${c[0]}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
 
 let bigSel=null;document.getElementById('gtrip').href=GR(TRIP);
 function renderBig(){const dc=i=>`color-mix(in srgb,var(--ac) ${30+i*5}%,#fff)`;
