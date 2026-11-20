@@ -748,12 +748,14 @@ function renderExpenses(){
   document.getElementById('explabel').textContent=expenses.length?`這次記下的（${expenses.length} 筆）`:'這次記下的';
   if(!expenses.length){box.innerHTML='<div class="mut" style="margin:0 2px 8px">還沒有記帳。餐費、油錢、停車都可以加在上面。</div>';return}
   const rows=[...expenses].sort((a,b)=>(a.date||'').localeCompare(b.date||'')||(a.id||0)-(b.id||0));
-  box.innerHTML='<div class="card">'+rows.map(e=>`<div class="exrow" data-id="${e.id}">
+  const WD='日一二三四五六',groups={};rows.forEach(e=>{(groups[e.date||'']=groups[e.date||'']||[]).push(e)});
+  box.innerHTML=Object.keys(groups).sort().map(d=>{const g=groups[d],tot=g.reduce((x,e)=>x+(Number(e.amt)||0),0);const dt=d?new Date(d+'T00:00:00'):null;
+   return `<div class="pkh" style="display:flex;justify-content:space-between"><span>${dt?`${dt.getMonth()+1}/${dt.getDate()}（${WD[dt.getDay()]}）`:'未填日期'}</span><span>小計 ${nzd(tot)}</span></div><div class="card">`+g.map(e=>`<div class="exrow" data-id="${e.id}">
     <div style="flex:1;min-width:0"><div><b>${esc(e.item)}</b></div>
-    <div class="mut">${esc(e.date||'')}　${esc(e.cat||'')}　${esc(e.payer)}先付　·　${esc(SPLIT_LABEL[e.split]||e.split)}</div></div>
+    <div class="mut">${esc(e.cat||'')}　${esc(e.payer)}先付　·　${esc(SPLIT_LABEL[e.split]||e.split)}</div></div>
     <div class="amt">${nzd(e.amt)}</div>
     <div class="ops"><button type="button" data-ee="${e.id}">編輯</button><button type="button" data-ed="${e.id}" title="刪除">刪</button></div>
-  </div>`).join('')+'</div>';
+  </div>`).join('')+'</div>'}).join('');
   box.querySelectorAll('[data-ee]').forEach(b=>b.onclick=()=>editExpense(+b.dataset.ee));
   box.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>delExpense(+b.dataset.ed));
 }
