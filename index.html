@@ -181,7 +181,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
         <label class="fld"><span>日期</span><input type="date" id="exp-date"></label>
         <label class="fld"><span>金額 NZ$</span><input type="number" id="exp-amt" min="0" step="0.01" inputmode="decimal" placeholder="0"></label>
         <label class="fld full"><span>項目</span><input type="text" id="exp-item" placeholder="例如：午餐、加油"></label>
-        <div class="fld"><span>誰先付</span><div class="seg" id="exp-payer"><button type="button" data-v="聿馨" class="on">聿馨</button><button type="button" data-v="宇翔">宇翔</button></div></div>
+        <div class="fld"><span>誰先付</span><div class="seg" id="exp-payer"><button type="button" data-v="👩‍💻" class="on">👩‍💻</button><button type="button" data-v="👨‍💼">👨‍💼</button></div></div>
         <label class="fld"><span>分攤</span>
           <select id="exp-split">
             <option value="half" selected>兩人平分</option>
@@ -201,7 +201,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
     <div class="acts" style="margin:4px 0 8px">
       <button class="btn" id="exp-export" type="button">匯出複製（可貼到試算表）</button>
     </div>
-    <div class="mut" style="margin:0 2px 18px">記帳只存在這支手機的瀏覽器裡，不會和宇翔的手機同步。若要兩人一起記，之後可以改成寫進 Google Sheet。</div>
+    <div class="mut" style="margin:0 2px 18px">記帳只存在這支手機的瀏覽器裡，不會和👨‍💼的手機同步。若要兩人一起記，之後可以改成寫進 Google Sheet。</div>
 
     <div class="hero" id="costhero"></div>
     <div class="sec">出發前已訂（新台幣）</div>
@@ -702,33 +702,34 @@ const EXP_CATS=['餐費','油錢','停車','門票','超市','其他'];
 const SPLIT_LABEL={half:'兩人平分',self:'只算付款人自己',other:'全算對方'};
 let expenses=LS.get('expenses',[]);
 if(!Array.isArray(expenses))expenses=[];
+expenses.forEach(e=>{if(e.payer&&e.payer!=='👩‍💻'&&e.payer!=='👨‍💼')e.payer=e.payer.charCodeAt(0)===0x807f?'👩‍💻':'👨‍💼'});
 let expEdit=null;
 const nzd=v=>{const n=Number(v)||0;return 'NZ$'+n.toLocaleString('en-NZ',{minimumFractionDigits:Number.isInteger(n)?0:2,maximumFractionDigits:2})};
 function todayISO(){const d=new Date();const off=d.getTimezoneOffset()*60000;return new Date(d-off).toISOString().slice(0,10)}
-function expPayer(){const on=document.querySelector('#exp-payer button.on');return on?on.dataset.v:'聿馨'}
+function expPayer(){const on=document.querySelector('#exp-payer button.on');return on?on.dataset.v:'👩‍💻'}
 function resetExpForm(){expEdit=null;
   const di=document.getElementById('exp-date');if(di&&!di.value)di.value=todayISO();
   document.getElementById('exp-item').value='';
   document.getElementById('exp-amt').value='';
   document.getElementById('exp-split').value='half';
-  document.querySelectorAll('#exp-payer button').forEach(b=>b.classList.toggle('on',b.dataset.v==='聿馨'));
+  document.querySelectorAll('#exp-payer button').forEach(b=>b.classList.toggle('on',b.dataset.v==='👩‍💻'));
   document.querySelectorAll('#expcats button').forEach(b=>b.classList.remove('on'));
   document.getElementById('exp-add').textContent='新增一筆';
   document.getElementById('exp-cancel').style.display='none';
 }
 function saveExpenses(){LS.set('expenses',expenses)}
 function expNet(){
-  let oweXH=0,oweHX=0,paid={}; // oweXH: 宇翔應付給聿馨
-  paid['聿馨']=0;paid['宇翔']=0;
+  let oweXH=0,oweHX=0,paid={}; // oweXH: 👨‍💼應付給👩‍💻
+  paid['👩‍💻']=0;paid['👨‍💼']=0;
   expenses.forEach(e=>{
     const amt=Number(e.amt)||0;const p=e.payer;
     paid[p]=(paid[p]||0)+amt;
-    const other=p==='聿馨'?'宇翔':'聿馨';
+    const other=p==='👩‍💻'?'👨‍💼':'👩‍💻';
     let debt=0;
     if(e.split==='half')debt=amt/2;
     else if(e.split==='other')debt=amt;
     if(debt){
-      if(p==='聿馨')oweXH+=debt;else oweHX+=debt;
+      if(p==='👩‍💻')oweXH+=debt;else oweHX+=debt;
     }
   });
   const net=Math.round((oweXH-oweHX)*100)/100;
@@ -740,9 +741,9 @@ function renderExpenses(){
   const {paid,net}=expNet();
   const sum=document.getElementById('expsum');
   let line='目前互不拖欠';
-  if(net>0)line=`宇翔要給聿馨 ${nzd(net)}`;
-  else if(net<0)line=`聿馨要給宇翔 ${nzd(-net)}`;
-  sum.innerHTML=`<div class="card" style="display:flex;gap:14px;flex-wrap:wrap"><div>聿馨已付 <b>${nzd(paid['聿馨']||0)}</b></div><div>宇翔已付 <b>${nzd(paid['宇翔']||0)}</b></div></div>
+  if(net>0)line=`👨‍💼要給👩‍💻 ${nzd(net)}`;
+  else if(net<0)line=`👩‍💻要給👨‍💼 ${nzd(-net)}`;
+  sum.innerHTML=`<div class="card" style="display:flex;gap:14px;flex-wrap:wrap"><div>👩‍💻已付 <b>${nzd(paid['👩‍💻']||0)}</b></div><div>👨‍💼已付 <b>${nzd(paid['👨‍💼']||0)}</b></div></div>
     <div class="settle"><div class="d" style="opacity:.85;font-size:12px">目前結算</div><div class="big">${line}</div></div>`;
   document.getElementById('explabel').textContent=expenses.length?`這次記下的（${expenses.length} 筆）`:'這次記下的';
   if(!expenses.length){box.innerHTML='<div class="mut" style="margin:0 2px 8px">還沒有記帳。餐費、油錢、停車都可以加在上面。</div>';return}
@@ -802,9 +803,9 @@ function exportExpenses(){
   });
   const {paid,net}=expNet();
   lines.push('');
-  lines.push(['','聿馨已付','',paid['聿馨']||0,'',''].map(csvEsc).join(','));
-  lines.push(['','宇翔已付','',paid['宇翔']||0,'',''].map(csvEsc).join(','));
-  lines.push(['','結算','',net===0?'互不拖欠':(net>0?'宇翔要給聿馨 '+nzd(net):'聿馨要給宇翔 '+nzd(-net)),'',''].map(csvEsc).join(','));
+  lines.push(['','👩‍💻已付','',paid['👩‍💻']||0,'',''].map(csvEsc).join(','));
+  lines.push(['','👨‍💼已付','',paid['👨‍💼']||0,'',''].map(csvEsc).join(','));
+  lines.push(['','結算','',net===0?'互不拖欠':(net>0?'👨‍💼要給👩‍💻 '+nzd(net):'👩‍💻要給👨‍💼 '+nzd(-net)),'',''].map(csvEsc).join(','));
   const text=lines.join('\n');
   const ok=()=>{const b=document.getElementById('exp-export');const t=b.textContent;b.textContent='已複製，可貼到試算表';setTimeout(()=>b.textContent=t,2000)};
   if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(text).then(ok).catch(()=>fallbackCopy(text,ok))}
