@@ -245,12 +245,6 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 
   <section class="view" id="v-game"><div id="gamebox"></div></section>
 
-  <section class="view" id="v-todo">
-    <div class="sec">還沒訂的</div>
-    <div id="todos"></div>
-    <div class="sec">有截止日的取消期限</div>
-    <div id="deadlines"></div>
-  </section>
 
   <section class="view" id="v-set">
     <div class="sec">主題顏色</div>
@@ -273,7 +267,6 @@ nav.tab button.on{color:var(--ac);font-weight:700}
   <button data-v="wx"><i>🌤️</i>天氣</button>
   <button data-v="map"><i>🗺️</i>整趟地圖</button>
   <button data-v="cost"><i>💰</i>費用</button>
-  <button data-v="todo"><i>⚠️</i>待辦</button>
   <button data-v="pack"><i>🧳</i>打包</button>
   <button data-v="game"><i>🎮</i>遊戲</button>
 </nav>
@@ -575,7 +568,7 @@ function renderTodo(){
 function renderSw(){const ci=LS.get('color',0);document.getElementById('sw').innerHTML=COLORS.map((c,i)=>`<button style="background:${c[0]}" class="${i===ci?'on':''}" data-c="${i}"></button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>setColor(+b.dataset.c))}
 
 function show(v){document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));if(v!=='game'&&gStop){gStop();gStop=null}
-({wx:renderWx,todo:renderTodo,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
+({wx:renderWx,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
 document.getElementById('gear').onclick=()=>show('set');
 document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 if(0)document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));if(b.dataset.v==='todo')renderTodo();document.getElementById('chips').style.display=b.dataset.v==='day'?'':'none';window.scrollTo({top:0})});
@@ -599,10 +592,15 @@ function renderBig(){const dc=i=>`color-mix(in srgb,var(--ac) ${30+i*5}%,#fff)`;
  document.getElementById('dgrid').innerHTML=DAYS.map((D,i)=>`<div class="dg ${bigSel===i?'sel':''}" data-g="${i}" style="background:${dc(i)};color:${i>5?'#fff':'var(--tx)'}"><b>D${D.d} · ${+D.date.slice(5,7)}/${+D.date.slice(8)}（${D.w}）</b>${D.region}</div>`).join('')+`<div class="dg" data-g="all" style="background:var(--card);border-color:var(--line)"><b>顯示全部</b>整趟路線</div><div class="dg" data-g="go" style="background:var(--card);border-color:var(--line)"><b>看選取日行程 ›</b>${bigSel!==null?'D'+DAYS[bigSel].d:'先選一天'}</div>`;
  document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>{const g=b.dataset.g;if(g==='all')bigSel=null;else if(g==='go'){if(bigSel!==null){show('day');go(bigSel)}return}else bigSel=(bigSel===+g?null:+g);renderBig()});}
 
-const PACK0=[['證件',['護照 ×2','台灣駕照 ×2','國際駕照 ×2（取車兩人都要）','NZeTA 確認信','信用卡（螢火蟲洞、停車只收卡）','少量紐幣現金']],
-['冰川／戶外',['保暖上衣 3–4 件（冰川健行）','快乾長褲（不能穿牛仔褲）','防水外套','太陽眼鏡（冰川必戴）','防曬乳','防蚊液（Fiordland 沙蠅多）','防滑包鞋','頭戴式相機（Shotover 可用）']],
+const PACK0=[['證件',['護照 ×2','台灣駕照 ×2','國際駕照 ×2（取車兩人都要）','NZeTA 確認信','信用卡（螢火蟲洞、停車只收卡）','備用信用卡','少量紐幣現金','訂房、租車確認信（手機離線存一份）','旅遊保險資料']],
+['衣物',['短袖 ×4','薄長袖 ×3','內衣褲、襪子 ×7','睡衣','好走的鞋','拖鞋','洗衣袋（中途要洗衣）']],
+['冰川／戶外',['保暖上衣 3–4 件（冰川健行）','快乾長褲（不能穿牛仔褲）','防水外套','太陽眼鏡（冰川必戴）','遮陽帽','防曬乳','防蚊液（Fiordland 沙蠅多）','防滑包鞋','小背包','保溫水壺','頭戴式相機（Shotover 可用）']],
+['騎馬／跳傘',['長褲（騎馬要穿）','長襪','髮圈','有拉鍊口袋的外套（騎馬、跳傘不能背包）']],
 ['泡湯／觀星',['泳衣','保暖外套（觀星夜間很冷）','毛帽、手套']],
-['電子',['萬用轉接頭（紐西蘭 I 型）','行動電源','手機車架','離線地圖（Milford 沒訊號）']],
+['飛機上',['頸枕','眼罩、耳塞','機上穿的薄外套','空水瓶（過安檢再裝水）']],
+['開車',['手機車架','車充、充電線','零食、飲料','垃圾袋']],
+['電子',['萬用轉接頭（紐西蘭 I 型）','行動電源','充電線多帶一條','網卡／eSIM','離線地圖（Milford 沒訊號）','相機記憶卡']],
+['藥品／盥洗',['常備藥（感冒、腸胃、止痛）','暈車藥（米佛峽灣船、山路）','OK 繃','乳液、護唇膏（天氣乾）','隱形眼鏡＋備用眼鏡']],
 ['行李提醒',['國內線手提只能放座位下方','國內線托運每人 20kg']]];
 let packDone=LS.get('pack',{}),packExtra=LS.get('packx',[]);
 function renderPack(){let h='';PACK0.forEach(([g,arr])=>{h+=`<div class="pkh">${g}</div>`+arr.map(x=>pk(x)).join('')});
