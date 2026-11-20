@@ -670,7 +670,13 @@ function gmem(box){const E=['🥝','🐑','🏔️','🐧','⛵','🍷','🌌','
  box.querySelector('#gre').onclick=init;gStop=()=>clearInterval(tm);init()}
 
 // ---- shared canvas helpers ----
-function gCanvas(box,W,H){const cv=box.querySelector('canvas');let px=Math.min(420,box.clientWidth||360);const top=box.getBoundingClientRect().top+window.scrollY,below=box.getBoundingClientRect().bottom-cv.getBoundingClientRect().bottom,nav=(document.querySelector('nav.tab')||{}).offsetHeight||0,avail=window.innerHeight-(cv.getBoundingClientRect().top+window.scrollY)-below-nav-12;if(avail>150)px=Math.min(px,Math.floor(avail*W/H));cv.width=px*2;cv.height=Math.round(px*2*H/W);cv.style.width=px+'px';cv.style.maxWidth='100%';const cx=cv.getContext('2d');const k=cv.width/W;cx.setTransform(k,0,0,k,0,0);return{cv,cx,k}}
+let gFitCur=null;window.addEventListener('resize',()=>{if(gFitCur)gFitCur()});if(window.visualViewport)visualViewport.addEventListener('resize',()=>{if(gFitCur)gFitCur()});
+function gCanvas(box,W,H){const cv=box.querySelector('canvas');cv.width=840;cv.height=Math.round(840*H/W);cv.style.maxWidth='100%';
+ const fit=()=>{if(!cv.isConnected){gFitCur=null;return}const nav=document.querySelector('nav.tab');const navTop=nav?nav.getBoundingClientRect().top:window.innerHeight;
+  const r=cv.getBoundingClientRect(),below=box.getBoundingClientRect().bottom-r.bottom,avail=navTop-r.top-below-10;
+  let px=Math.min(420,box.clientWidth||360);if(avail>140)px=Math.min(px,Math.floor(avail*W/H));cv.style.width=px+'px';cv.style.height=Math.round(px*H/W)+'px'};
+ window.scrollTo(0,0);fit();gFitCur=fit;requestAnimationFrame(fit);setTimeout(fit,300);
+ const cx=cv.getContext('2d');const k=cv.width/W;cx.setTransform(k,0,0,k,0,0);return{cv,cx,k}}
 function gPtr(cv,W,cb,up){const f=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;if(!t)return;cb((t.clientX-r.left)*W/r.width,(t.clientY-r.top)*W/r.width)};
  cv.addEventListener('touchstart',e=>{e.preventDefault();f(e)},{passive:false});cv.addEventListener('touchmove',e=>{e.preventDefault();f(e)},{passive:false});
  cv.addEventListener('mousemove',e=>{if(e.buttons)f(e)});cv.addEventListener('mousedown',f);if(up){cv.addEventListener('touchend',up);cv.addEventListener('mouseup',up)}}
