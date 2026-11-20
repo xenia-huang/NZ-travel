@@ -673,7 +673,7 @@ function gCanvas(box,W,H){const cv=box.querySelector('canvas');let px=Math.min(4
 function gPtr(cv,W,cb,up){const f=e=>{const r=cv.getBoundingClientRect();const t=e.touches?e.touches[0]:e;if(!t)return;cb((t.clientX-r.left)*W/r.width,(t.clientY-r.top)*W/r.width)};
  cv.addEventListener('touchstart',e=>{e.preventDefault();f(e)},{passive:false});cv.addEventListener('touchmove',e=>{e.preventDefault();f(e)},{passive:false});
  cv.addEventListener('mousemove',e=>{if(e.buttons)f(e)});cv.addEventListener('mousedown',f);if(up){cv.addEventListener('touchend',up);cv.addEventListener('mouseup',up)}}
-function emo(cx,e,x,y,s,flip){cx.save();cx.font=`${s}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.translate(x,y);if(flip)cx.scale(-1,1);cx.fillText(e,0,0);cx.restore()}
+function emo(cx,e,x,y,s,flip){cx.save();cx.fillStyle='#000';cx.globalAlpha=Math.max(cx.globalAlpha,.8);cx.font=`${s}px sans-serif`;cx.textAlign='center';cx.textBaseline='middle';cx.translate(x,y);if(flip)cx.scale(-1,1);cx.fillText(e,0,0);cx.restore()}
 function gLoop(fn){let id,last=performance.now();const t=now=>{const dt=Math.min(.05,(now-last)/1000);last=now;if(fn(dt)!==false)id=requestAnimationFrame(t)};id=requestAnimationFrame(t);return()=>cancelAnimationFrame(id)}
 
 // ---- 趕羊進圈 ----
@@ -709,14 +709,14 @@ function gsheep(box){const W=360,H=480,PEN={x:110,y:14,w:140,h:86},N=8;let sh,do
 
 // ---- 瓦納卡跳傘 ----
 function gsky(box){const W=360,H=540,PY=130;let p,obj,alt,score,lives,spd,tx,best=LS.get('bestsky',0),stop=null,acc=0,inv=0;
- box.innerHTML=gHead('跳傘')+`<canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><div id="gmsg" class="gmsg"></div><div class="pad" style="grid-template-columns:repeat(2,64px)"><button data-k="L">◀</button><button data-k="R">▶</button></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ box.innerHTML=gHead('跳傘')+`<div style="position:relative;width:fit-content;margin:0 auto"><canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><span id="skyp" style="position:absolute;left:0;top:0;transform:translate(-50%,-50%);pointer-events:none;line-height:1">🪂</span></div><div id="gmsg" class="gmsg"></div><div class="pad" style="grid-template-columns:repeat(2,64px)"><button data-k="L">◀</button><button data-k="R">▶</button></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
  const {cv,cx}=gCanvas(box,W,H);const msg=box.querySelector('#gmsg');
  gPtr(cv,W,x=>{tx=x});const mv=k=>{if(k==='L')tx=Math.max(20,tx-60);if(k==='R')tx=Math.min(W-20,tx+60)};bindPad(mv);const uk=keys(mv);
  const init=()=>{p=W/2;tx=W/2;obj=[];alt=15000;score=0;lives=3;spd=170;acc=0;inv=0;msg.textContent='左右移動：收集 ⭕ 加分，閃開 🐦';box.querySelector('#gre').textContent='重來';if(stop)stop();stop=gLoop(step)};
  const draw=()=>{const g=cx.createLinearGradient(0,0,0,H);g.addColorStop(0,'#7cc6f2');g.addColorStop(1,alt<4000?'#bfe3c4':'#d8f0ff');cx.fillStyle=g;cx.fillRect(0,0,W,H);
   if(alt<5000){const gy=H-(5000-Math.max(alt,0))/5000*120;cx.fillStyle='#4a90a8';cx.fillRect(0,gy,W,H-gy);cx.fillStyle='#6a5a4a';cx.beginPath();cx.moveTo(0,gy);cx.lineTo(70,gy-50);cx.lineTo(150,gy);cx.lineTo(240,gy-70);cx.lineTo(330,gy);cx.lineTo(W,gy-30);cx.lineTo(W,gy);cx.fill()}
   obj.forEach(o=>{if(o.t==='c'){cx.globalAlpha=.8;emo(cx,'☁️',o.x,o.y,52);cx.globalAlpha=1}else emo(cx,o.t==='r'?'⭕':'🐦',o.x,o.y,o.t==='r'?34:30,o.vx>0)});
-  if(!(inv>0&&Math.floor(inv*10)%2))emo(cx,'🪂',p,PY,40);
+  {const sp=box.querySelector('#skyp'),r=cv.clientWidth/W;sp.style.left=p*r+'px';sp.style.top=PY*r+'px';sp.style.fontSize=40*r+'px';sp.style.visibility=(inv>0&&Math.floor(inv*10)%2)?'hidden':'visible'}
   document.getElementById('gscore').textContent=`${Math.max(0,Math.round(alt)).toLocaleString()}ft ⭕${score} ${'❤️'.repeat(lives)} 最高${best}`};
  const end=(t)=>{if(score>best){best=score;LS.set('bestsky',best)}msg.textContent=t;box.querySelector('#gre').textContent='再跳一次';draw()};
  const step=dt=>{if(!cv.isConnected)return false;
