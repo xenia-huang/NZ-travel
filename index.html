@@ -112,6 +112,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .ispot .pic img{display:block;width:100%;height:100%;object-fit:cover}
 .ispot h4{margin:8px 0 2px;font-size:14px}
 .ispot p{margin:6px 0 0;font-size:13.5px;line-height:1.55;color:var(--tx)}
+.cdl{font-size:12px;color:var(--warn);margin-top:2px}.cdl.past{opacity:.45}
 .fc{background:var(--bg,#f6f2ec);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:8px 0 4px}
 .fh{display:flex;align-items:center;gap:8px;font-size:14px}.fi{background:var(--ac2);border-radius:8px;padding:2px 5px}
 .fno{font-family:ui-monospace,Menlo,monospace;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:1px 7px;color:var(--ac);font-weight:700}
@@ -584,7 +585,7 @@ function renderCost(){const tot=COSTS.reduce((a,c)=>a+c[2],0);
  renderExpenses();
   const cats={};COSTS.forEach(c=>cats[c[1]]=(cats[c[1]]||0)+c[2]);const mx=Math.max(...Object.values(cats));
  document.getElementById('costcat').innerHTML=Object.entries(cats).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${k}</span><b>${nt(v)} <span class="mut">${Math.round(v/tot*100)}%</span></b></div><div class="bar" style="width:${v/mx*100}%"></div></div>`).join('');
- document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map((c,i)=>[c,i]).sort((x,y)=>x[0][3]-y[0][3]||x[1]-y[1]).map(([c])=>{const D=DAYS.find(x=>x.d===c[3]);return [c,D?`${+D.date.slice(5,7)}/${+D.date.slice(8)}`:'']}).map(([c,dt])=>`<div class="crow"><span><span class="mut">D${c[3]} ${dt}</span> ${c[0]}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
+ document.getElementById('costlist').innerHTML='<div class="card">'+COSTS.map((c,i)=>[c,i]).sort((x,y)=>x[0][3]-y[0][3]||x[1]-y[1]).map(([c])=>{const D=DAYS.find(x=>x.d===c[3]);return [c,D?`${+D.date.slice(5,7)}/${+D.date.slice(8)}`:'']}).map(([c,dt])=>{const dl=DEADLINES.find(x=>c[0].includes(x[1])),now=new Date().toISOString().slice(0,10);return [c,dt,dl?`<div class="cdl${dl[0]<now?' past':''}">⏳ 取消期限 ${+dl[0].slice(5,7)}/${+dl[0].slice(8)}：${dl[2]}${dl[0]<now?'（已過）':''}</div>`:'']}).map(([c,dt,dlh])=>`<div class="crow"><span><span class="mut">D${c[3]} ${dt}</span> ${c[0]}${dlh}</span><b>${nt(c[2])}</b></div>`).join('')+'</div>';}
 
 let bigSel=null;document.getElementById('gtrip').href=GR(TRIP);
 function renderBig(){const dc=i=>`color-mix(in srgb,var(--ac) ${30+i*5}%,#fff)`;
