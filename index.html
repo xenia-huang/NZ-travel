@@ -112,6 +112,23 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .ispot .pic img{display:block;width:100%;height:100%;object-fit:cover}
 .ispot h4{margin:8px 0 2px;font-size:14px}
 .ispot p{margin:6px 0 0;font-size:13.5px;line-height:1.55;color:var(--tx)}
+.fc{background:var(--bg,#f6f2ec);border:1px solid var(--line);border-radius:16px;padding:12px 14px;margin:8px 0 4px}
+.fh{display:flex;align-items:center;gap:8px;font-size:14px}.fi{background:var(--ac2);border-radius:8px;padding:2px 5px}
+.fno{font-family:ui-monospace,Menlo,monospace;border:1px solid var(--line);background:var(--card);border-radius:8px;padding:1px 7px;color:var(--ac);font-weight:700}
+.fdur{margin-left:auto;font-size:12.5px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:2px 8px}
+.fr{display:grid;grid-template-columns:1fr auto 1fr;gap:6px;align-items:center;margin-top:12px}
+.ftag{display:inline-block;font-size:11px;font-weight:700;background:rgba(0,0,0,.07);border-radius:6px;padding:1px 6px}.ftag.fz{background:#dbeafe;color:#1d4ed8}
+.fcode{font-weight:800;font-size:17px;margin-top:4px}.fcode em{font-style:normal;color:#1d4ed8}
+.fap{font-size:11.5px;color:var(--mut)}.ftm{font-size:24px;font-weight:800;margin-top:4px}.ftm sup{font-size:11px;color:var(--warn);margin-left:2px}
+.fmid{text-align:center;font-size:16px;color:var(--mut)}.fmid div{font-size:11px;font-weight:700;color:var(--tx)}
+.fb{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;border-top:1px solid var(--line);margin-top:10px;padding-top:8px;font-size:12.5px}
+.wxloc{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:8px}
+.wxloc button{flex:0 0 auto;font:inherit;font-size:13px;border:1px solid var(--line);background:var(--card);border-radius:20px;padding:6px 12px;color:var(--tx)}
+.wxloc button.on{background:var(--tx);color:var(--card);border-color:var(--tx)}
+.wxrow{display:grid;grid-template-columns:76px 1fr auto 52px;gap:8px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
+.wxrow:last-child{border:0}.wxrow .t{font-weight:700;text-align:right;white-space:nowrap}
+.wxrow .p{font-size:12px;text-align:center;background:#eff6ff;color:#1d4ed8;border-radius:12px;padding:3px 0}
+.wxrow.trip{background:color-mix(in srgb,var(--ac2) 50%,transparent);margin:0 -10px;padding:10px}
 .spots{margin-top:4px;display:flex;flex-direction:column;gap:10px}
 .spot{background:var(--card);border:1px solid var(--line);border-radius:18px;overflow:hidden}
 @media(min-width:800px){
@@ -164,6 +181,15 @@ nav.tab button.on{color:var(--ac);font-weight:700}
     </div>
     <div class="sec" id="tlh">行程 <span id="nstat" style="color:var(--warn);font-weight:400"></span></div>
     <div class="tl" id="tl"></div>
+  </section>
+
+  <section class="view" id="v-wx">
+    <div class="sec">當地天氣預報</div>
+    <div class="wxloc" id="wxloc"></div>
+    <div class="mut" id="wxnote" style="margin:0 2px 8px"></div>
+    <div class="card" id="wxnow"></div>
+    <div class="card" id="wxlist"></div>
+    <div class="mut" style="margin:8px 2px 14px">資料來源 Open-Meteo，需要網路；最後一次查到的結果會存在手機，沒訊號時先顯示舊的。預報只到未來 7 天，出發前一週才看得到旅行那幾天。</div>
   </section>
 
   <section class="view" id="v-map">
@@ -244,6 +270,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 
 <nav class="tab">
   <button data-v="day" class="on"><i>🗓️</i>每日行程</button>
+  <button data-v="wx"><i>🌤️</i>天氣</button>
   <button data-v="map"><i>🗺️</i>整趟地圖</button>
   <button data-v="cost"><i>💰</i>費用</button>
   <button data-v="todo"><i>⚠️</i>待辦</button>
@@ -264,12 +291,12 @@ const DAYS=[
 {d:1,date:'2027-02-03',w:'三',title:'出發！台北 → 奧克蘭',region:'桃園',items:[
  {t:'16:30',k:'car',title:'機場接送',b:false,info:['還沒訂']},
  {t:'17:45',k:'info',title:'抵達桃園機場 T2'},
- {t:'20:25',k:'fly',title:'NZ78 台北 → 奧克蘭',sub:'Air NZ Skycouch · 桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 18:55','行李托運截止 19:25']},
+ {t:'20:25',k:'fly',title:'NZ78 台北 → 奧克蘭',fl:{al:'紐西蘭航空',no:'NZ78',dur:'10h 40m',a:['台北桃園','TPE','桃園國際機場 T2','20:25'],z:['奧克蘭','AKL','奧克蘭國際航廈','12:05','+1'],bag:'2×23kg',cabin:'Skycouch'},b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 18:55','行李托運截止 19:25']},
  {t:'夜',k:'stay',title:'機上過夜'}
 ]},
 {d:2,date:'2027-02-04',w:'四',title:'奧克蘭轉機 → 皇后鎮',region:'皇后鎮',items:[
  {t:'12:05',k:'fly',title:'抵達奧克蘭',sub:'轉國內線航站 D'},
- {t:'18:45',k:'fly',title:'JQ299 奧克蘭 → 皇后鎮',sub:'18:45 → 20:40',b:true,info:['Jetstar，國內線航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
+ {t:'18:45',k:'fly',title:'JQ299 奧克蘭 → 皇后鎮',fl:{al:'Jetstar',no:'JQ299',dur:'1h 55m',a:['奧克蘭','AKL','國內線航站 D','18:45'],z:['皇后鎮','ZQN','皇后鎮機場','20:40'],bag:'20kg',hand:'只放座位下方',cabin:'前艙座位'},b:true,info:['Jetstar，國內線航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
  {t:'22:00',k:'car',title:'GO Rentals 取車',sub:'皇后鎮機場',b:true,c:[-45.0211,168.7392],u:'https://www.google.com/maps/search/?api=1&query=GO+Rentals+Queenstown+Airport',info:['Toyota RAV4 AWD Hybrid','2/4 22:00 取 → 2/15 21:00 基督城機場還','分店在航廈外步行 1 分鐘，22:00 夜間自助取車（依 email 指示）'],warn:['兩人都要帶駕照＋國際駕照到場登記','禁開：Skippers Rd、往 Macetown、Ball Hutt Rd、非正式碎石路；車底損傷不保']},
  {drive:1,min:7,o:'Queenstown Airport',dq:'6 Saint Marks Lane, Queenstown'},
  {t:'住宿',k:'stay',title:'Airbnb 景觀一房（第 1/3 晚）',sub:'6 Saint Marks Lane',b:true,c:[-45.0275,168.6735],q:'6 Saint Marks Lane, Queenstown',info:['2/4–2/7 共 3 晚，入住 15:00–00:00，退房 10:00 前','抵達前 7 天房東會傳入住資訊'],warn:['入住截止 00:00，航班延誤先傳訊息給房東','2027/1/28 15:00（當地）前取消可部分退款']}
@@ -369,12 +396,12 @@ const DAYS=[
 ]},
 {d:14,date:'2027-02-16',w:'二',title:'基督城 → 奧克蘭',region:'奧克蘭',items:[
  {t:'08:55',k:'walk',title:'步行到基督城機場航廈',sub:'建議 8:55 前到',c:[-43.489,172.532]},
- {t:'09:55',k:'fly',title:'JQ232 基督城 → 奧克蘭',sub:'09:55 → 11:15',b:true,info:['Jetstar，航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
+ {t:'09:55',k:'fly',title:'JQ232 基督城 → 奧克蘭',fl:{al:'Jetstar',no:'JQ232',dur:'1h 20m',a:['基督城','CHC','基督城機場','09:55'],z:['奧克蘭','AKL','國內線航站 D','11:15'],bag:'20kg',hand:'只放座位下方',cabin:'前艙座位'},b:true,info:['Jetstar，航站 D','前艙座位','手提只能放座位下方，托運 20kg']},
  {t:'住宿',k:'stay',title:'奧克蘭機場附近',b:false,info:['2/17 12:20 起飛，住機場附近']}
 ]},
 {d:15,date:'2027-02-17',w:'三',title:'回家',region:'奧克蘭 → 台北',items:[
  {t:'09:30',k:'info',title:'抵達奧克蘭國際航廈'},
- {t:'12:20',k:'fly',title:'NZ77 奧克蘭 → 台北',sub:'Air NZ Skycouch · 18:35 抵達桃機 T2',b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 10:50','行李托運截止 11:20']},
+ {t:'12:20',k:'fly',title:'NZ77 奧克蘭 → 台北',fl:{al:'紐西蘭航空',no:'NZ77',dur:'11h 15m',a:['奧克蘭','AKL','奧克蘭國際航廈','12:20'],z:['台北桃園','TPE','桃園國際機場 T2','18:35'],bag:'2×23kg',cabin:'Skycouch'},b:true,info:['Skycouch，每人托運 2×23kg'],warn:['報到截止 10:50','行李托運截止 11:20']},
  {t:'18:35',k:'home',title:'抵達桃機，回家！'},
  {t:'',k:'car',title:'機場接送',b:false}
 ]}
@@ -471,6 +498,11 @@ const SPOTS={
 {at:'基督城機場旅館',title:'基督城 Christchurch',text:'南島最大城市，有「花園城市」之稱，雅芳河（Avon River）和植物園是市區最輕鬆的散步處。這天行程很緊，傍晚要趕到機場 21:00 前還車，只能路過、不宜再排景點。',img:'christchurch.jpg'}],
 14:[{at:'奧克蘭機場附近',title:'奧克蘭 Auckland',text:'紐西蘭最大城市，海港與天空塔是市區最一眼能認出的景色。JQ232 約 11:15 抵達，隔天中午才起飛；若改住市區，下午可以去維多利亞碼頭或坐渡輪到 Devonport。目前住宿寫的是機場附近，尚未預訂。',img:'auckland.jpg'}]
 };
+function flightCard(f){return `<div class="fc"><div class="fh"><span class="fi">✈️</span><b>${f.al}</b><span class="fno">${f.no}</span><span class="fdur">⏱ ${f.dur}</span></div>
+ <div class="fr"><div><span class="ftag">起飛</span><div class="fcode">${f.a[0]} <em>${f.a[1]}</em></div><div class="fap">${f.a[2]}</div><div class="ftm">${f.a[3]}</div></div>
+ <div class="fmid">✈<div>直飛</div></div>
+ <div style="text-align:right"><span class="ftag fz">抵達</span><div class="fcode">${f.z[0]} <em>${f.z[1]}</em></div><div class="fap">${f.z[2]}</div><div class="ftm">${f.z[3]}${f.z[4]?`<sup>${f.z[4]}</sup>`:''}</div></div></div>
+ <div class="fb"><span>🧳 托運 ${f.bag}</span>${f.cabin?`<span>💺 ${f.cabin}</span>`:''}${f.hand?`<span>🎒 手提${f.hand}</span>`:''}</div></div>`}
 function spotsFor(D,it){
   const list=(SPOTS[D.d]||[]).filter(s=>{const first=D.items.find(x=>!x.drive&&x.title.includes(s.at));return first===it});
   return list.map(s=>`<div class="ispot">${s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:''}${list.length>1||!it.title.includes(s.title.split(' ')[0])?`<h4>${esc(s.title)}</h4>`:''}<p>${esc(s.text)}</p></div>`).join('');
@@ -501,7 +533,7 @@ function render(){
   return `<div class="it ${it===nextKey?'next':''}" data-k="${key}">
    <div class="ic">${IC[it.k]||'📍'}${num?`<span class="n">${num}</span>`:''}</div>
    <div class="bd"><div class="tm">${it===nextKey?'▶ 下一站 · ':''}${it.t||''}</div>
-   <div class="tt">${it.title}${badge}</div>${it.sub?`<div class="sub">${it.sub}</div>`:''}${spotsFor(D,it)}
+   <div class="tt">${it.title}${badge}</div>${it.sub?`<div class="sub">${it.sub}</div>`:''}${it.fl?flightCard(it.fl):''}${spotsFor(D,it)}
    ${(it.warn&&it.warn.length)?`<div class="sub" style="color:var(--warn)">⚠️ ${it.warn[0]}${it.warn.length>1?` 等 ${it.warn.length} 項`:''}</div>`:''}
    <div class="more">${it.info?'<ul>'+it.info.map(x=>'<li>'+x+'</li>').join('')+'</ul>':''}
     ${it.warn?'<div class="w"><b>注意</b><ul>'+it.warn.map(x=>'<li>'+x+'</li>').join('')+'</ul></div>':''}</div>
@@ -543,7 +575,7 @@ function renderTodo(){
 function renderSw(){const ci=LS.get('color',0);document.getElementById('sw').innerHTML=COLORS.map((c,i)=>`<button style="background:${c[0]}" class="${i===ci?'on':''}" data-c="${i}"></button>`).join('');document.querySelectorAll('[data-c]').forEach(b=>b.onclick=()=>setColor(+b.dataset.c))}
 
 function show(v){document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x.dataset.v===v));document.querySelectorAll('.view').forEach(x=>x.classList.toggle('on',x.id==='v-'+v));if(v!=='game'&&gStop){gStop();gStop=null}
-({todo:renderTodo,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
+({wx:renderWx,todo:renderTodo,map:renderBig,cost:renderCost,pack:renderPack,game:renderGames}[v]||(()=>{}))();document.getElementById('chips').style.display=v==='day'?'':'none';window.scrollTo({top:0})}
 document.getElementById('gear').onclick=()=>show('set');
 document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>show(b.dataset.v));
 if(0)document.querySelectorAll('nav.tab button').forEach(b=>b.onclick=()=>{document.querySelectorAll('nav.tab button').forEach(x=>x.classList.toggle('on',x===b));document.querySelectorAll('.view').forEach(v=>v.classList.toggle('on',v.id==='v-'+b.dataset.v));if(b.dataset.v==='todo')renderTodo();document.getElementById('chips').style.display=b.dataset.v==='day'?'':'none';window.scrollTo({top:0})});
@@ -580,6 +612,33 @@ function renderPack(){let h='';PACK0.forEach(([g,arr])=>{h+=`<div class="pkh">${
  document.querySelectorAll('[data-rm]').forEach(b=>b.onclick=()=>{packExtra=packExtra.filter(x=>x!==b.dataset.rm);LS.set('packx',packExtra);renderPack()});}
 function pk(x,rm){const ok=!!packDone[x];return `<label class="pk ${ok?'ok':''}"><input type="checkbox" data-p="${x.replace(/"/g,'')}" ${ok?'checked':''}><span style="flex:1">${x}</span>${rm?`<button class="btn" data-rm="${x}" style="padding:2px 8px">✕</button>`:''}</label>`}
 document.getElementById('packadd').onclick=()=>{const i=document.getElementById('packin');const v=i.value.trim();if(v&&!packExtra.includes(v)){packExtra.push(v);LS.set('packx',packExtra)}i.value='';renderPack()};
+
+// ---------- weather (Open-Meteo) ----------
+const WXL=[['皇后鎮',-45.0312,168.6626,[2,3,4]],['Te Anau',-45.4146,167.7178,[5]],['米佛峽灣',-44.671,167.926,[6]],['瓦納卡',-44.7,169.13,[7,8]],['Franz Josef',-43.388,170.182,[9,10]],['Tekapo',-44.0047,170.4772,[11]],['庫克山',-43.735,170.096,[12]],['基督城',-43.532,172.636,[13]],['奧克蘭',-36.85,174.76,[14,15]]];
+const WXC=c=>c===0?['☀️','晴']:c===1?['🌤️','大致晴']:c===2?['⛅','多雲時晴']:c===3?['☁️','陰天']:c<=48?['🌫️','霧']:c<=57?['🌦️','毛毛雨']:c<=67?['🌧️','下雨']:c<=77?['🌨️','下雪']:c<=82?['🌦️','陣雨']:c<=86?['🌨️','陣雪']:['⛈️','雷雨'];
+let wxSel=null;
+function wxDefault(){const i=todayIdx();if(i>=0){const d=DAYS[i].d;const k=WXL.findIndex(l=>l[3].includes(d));if(k>=0)return k}return 0}
+function renderWx(){if(wxSel==null)wxSel=wxDefault();
+ document.getElementById('wxloc').innerHTML=WXL.map((l,i)=>`<button data-i="${i}" class="${i===wxSel?'on':''}">📍 ${l[0]}</button>`).join('')+`<button data-i="me" class="${wxSel==='me'?'on':''}">🧭 我的定位</button>`;
+ document.querySelectorAll('#wxloc button').forEach(b=>b.onclick=()=>{wxSel=b.dataset.i==='me'?'me':+b.dataset.i;renderWx()});
+ const note=document.getElementById('wxnote');
+ if(wxSel==='me'){note.textContent='定位中…';if(!navigator.geolocation){note.textContent='這支手機不支援定位';return}
+  navigator.geolocation.getCurrentPosition(p=>{note.textContent='目前位置';wxFetch('me',p.coords.latitude,p.coords.longitude)},()=>{note.textContent='沒有拿到定位權限，請在瀏覽器設定允許定位'},{timeout:10000});return}
+ const L=WXL[wxSel];const ds=DAYS.filter(d=>L[3].includes(d.d));
+ note.textContent=ds.length?`行程在這裡：${ds.map(d=>`${+d.date.slice(5,7)}/${+d.date.slice(8)}`).join('、')}`:'';
+ wxFetch(L[0],L[1],L[2])}
+function wxDraw(key,data,old){if((wxSel==='me'?'me':WXL[wxSel]&&WXL[wxSel][0])!==key)return;
+ const tripDates=new Set(wxSel==='me'?[]:DAYS.filter(d=>WXL[wxSel][3].includes(d.d)).map(d=>d.date));
+ const c=data.current,dl=data.daily,WD='日一二三四五六';
+ document.getElementById('wxnow').innerHTML=c?`<div style="display:flex;align-items:center;gap:12px"><span style="font-size:34px">${WXC(c.weather_code)[0]}</span><div><div style="font-size:26px;font-weight:800">${Math.round(c.temperature_2m)}°C</div><div class="mut">現在 · ${WXC(c.weather_code)[1]}${old?' · 舊資料（'+old+'）':''}</div></div></div>`:'';
+ document.getElementById('wxlist').innerHTML=`<div class="mut" style="display:flex;justify-content:space-between;margin-bottom:2px"><b style="color:var(--tx)">這週預報</b><span>氣溫 / 降雨機率</span></div>`+dl.time.map((t,i)=>{const d=new Date(t+'T00:00:00');const w=WXC(dl.weather_code[i]);const pp=dl.precipitation_probability_max[i];
+  return `<div class="wxrow${tripDates.has(t)?' trip':''}"><span><b>${d.getMonth()+1}/${d.getDate()}</b>（${WD[d.getDay()]}）</span><span>${w[0]} ${w[1]}</span><span class="t">${Math.round(dl.temperature_2m_min[i])}° ~ ${Math.round(dl.temperature_2m_max[i])}°C</span><span class="p">☔ ${pp==null?'–':pp+'%'}</span></div>`}).join('')}
+function wxFetch(key,lat,lon){const ck='wx_'+key;const cached=LS.get(ck,null);
+ if(cached){const dt=new Date(cached.at);wxDraw(key,cached.data,`${dt.getMonth()+1}/${dt.getDate()} ${String(dt.getHours()).padStart(2,'0')}:${String(dt.getMinutes()).padStart(2,'0')}`)}
+ else{document.getElementById('wxnow').innerHTML='<div class="mut">載入中…</div>';document.getElementById('wxlist').innerHTML=''}
+ fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat.toFixed(3)}&longitude=${lon.toFixed(3)}&current=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto&forecast_days=7`)
+  .then(r=>{if(!r.ok)throw 0;return r.json()}).then(d=>{LS.set(ck,{at:Date.now(),data:d});wxDraw(key,d)})
+  .catch(()=>{if(!cached){document.getElementById('wxnow').innerHTML='<div class="mut">連不上天氣資料，請確認有網路後再點一次地點</div>'}})}
 
 // ================= GAMES (offline) =================
 const GAMES=[['gsheep','🐑','趕羊進圈','當牧羊犬把羊趕進羊圈'],['gsky','🪂','瓦納卡跳傘','收集圈圈、閃開鳥'],['ghorse','🐎','Glenorchy 騎馬','點一下跳過障礙'],['gmem','🃏','翻牌配對','紐西蘭主題記憶']];
