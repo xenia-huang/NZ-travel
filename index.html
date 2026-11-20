@@ -113,6 +113,7 @@ button{touch-action:manipulation}
 .ispot{margin:8px 0 4px}
 .ispot .pic{aspect-ratio:16/9;overflow:hidden;border-radius:12px;background:var(--ac2)}
 .ispot .pic img{display:block;width:100%;height:100%;object-fit:cover}
+.ispot .pcr{font-size:10.5px;color:var(--mut);margin-top:3px}
 .ispot h4{margin:8px 0 2px;font-size:14px}
 .ispot p{margin:6px 0 0;font-size:13.5px;line-height:1.55;color:var(--tx)}
 .cdl{font-size:12px;color:var(--warn);margin-top:2px}.cdl.past{opacity:.45}
@@ -476,7 +477,10 @@ const SPOTS={
 3:[{at:'Skyline 纜車',title:'Skyline 纜車',text:'纜車上 Skyline 山頂，約升高 480 公尺，可俯瞰皇后鎮、瓦卡蒂普湖和 The Remarkables。',img:'skyline-gondola.jpg'},
 {at:'Skyline 纜車',title:'Skyline Luge 溜溜車',text:'山頂有 Luge 溜溜車，兩條賽道都能自己控制速度。想少排隊，早一點或接近傍晚再上山較合適。',img:'skyline-luge.jpg'},
 {at:'Gibbston Valley',title:'Gibbston Valley 酒莊',text:'皇后鎮往東約半小時，是 Kawarau 峽谷裡頗具代表性的 Central Otago 酒莊，以黑皮諾（Pinot Noir）聞名，也有餐廳和酒窖可以坐下來。2/5 和 2/9 都會經過，兩天擇一即可。',img:'gibbston-valley.jpg'}],
-4:[{at:"Mrs Woolly's",title:'Glenorchy 格林諾奇',text:'瓦卡蒂普湖最深處的小鎮，從皇后鎮沿湖公路開車約一小時，沿途風景本身就值得慢慢開。鎮上的紅色船屋和 Lagoon 木棧道都在附近，午餐後可以走走；騎馬記得 9:00 前報到備馬。',img:'glenorchy.jpg'},
+4:[{at:'Paradise',title:'Paradise 天堂谷',text:'Glenorchy 再往北約 20 多分鐘，Dart River 河谷裡的大草原、鑽石湖和雪山，《魔戒》與《哈比人》都在這一帶取景。其實只有一塊路標和幾戶農場，停下來拍照就很值得。後段是碎石路，慢慢開。',img:'paradise.jpg',cr:'Paradise Paddock · Jeff Hitchcock · CC BY 3.0（Wikimedia Commons）'},
+{at:"Mrs Woolly's",title:"Mrs Woolly's General Store",text:'Glenorchy 主街上的雜貨店兼咖啡店，賣手作派、咖啡、甜點和紐西蘭製的小物，有座位也有廁所，騎完馬來這裡吃午餐剛好。',img:'mrs-woolly.jpg',cr:'General Store Glenorchy · Tony Hisgett · CC BY 2.0（Wikimedia Commons，2016 年拍攝）'},
+{at:'Lagoon Scenic Walkway',title:'Glenorchy Lagoon Scenic Walkway',text:'小鎮旁的濕地木棧道，平坦好走，天氣好時水面會倒映後面的雪山，挑一段來回走 20–30 分鐘就好。'},
+{at:'Red Shed',title:'Glenorchy Red Shed 紅色小屋',text:'碼頭邊的紅色船屋，背後是瓦卡蒂普湖和雪山，是 Glenorchy 最有名的拍照點。拍完就從這裡出發回皇后鎮。',img:'glenorchy.jpg'},
 {at:'Glenorchy 騎馬',title:'Glenorchy 騎馬（Lighthorse · The River Wild）',text:'在 Rees 和 Dart 兩條冰河河谷之間騎馬，背景是雪山和《魔戒》取景過的山谷地形，路線會穿越淺河（看天氣），新手也能騎。9:30 出發、9:00 前要報到備馬；業者提供防水外套、靴子和頭盔，自己穿長褲＋襪子。騎乘時不能背包，手機放拉鍊口袋。（照片為騎馬涉水示意，非當地實景）',img:'glenorchy-horse.jpg'},
 {at:'Shotover Jet',title:'Shotover Jet 噴射快艇',text:'在肖特奧弗河（Shotover River）峽谷裡高速轉彎、原地迴旋的噴射快艇，是皇后鎮最經典的水上活動之一，船上約 25 分鐘。記得戴太陽眼鏡、做好防曬，並帶一件保暖外套。',img:'shotover-jet.jpg'},
 {at:'Onsen',title:'Onsen Hot Pools 泡湯',text:'Arthurs Point 的日式露天溫泉，獨立湯屋面向河谷。你們訂的是晚上時段，可邊泡邊看日落（當天日落約 21:09）；20:30 前要到櫃台，晚到會被縮短時間。',img:'onsen.jpg'}],
@@ -508,7 +512,7 @@ function flightCard(f){return `<div class="fc"><div class="fh"><span class="fi">
  <div class="fb"><span>🧳 托運 ${f.bag}</span>${f.cabin?`<span>💺 ${f.cabin}</span>`:''}${f.hand?`<span>🎒 手提${f.hand}</span>`:''}</div></div>`}
 function spotsFor(D,it){
   const list=(SPOTS[D.d]||[]).filter(s=>{const first=D.items.find(x=>!x.drive&&x.title.includes(s.at));return first===it});
-  return list.map(s=>`<div class="ispot">${s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:''}${list.length>1||!it.title.includes(s.title.split(' ')[0])?`<h4>${esc(s.title)}</h4>`:''}<p>${esc(s.text)}</p></div>`).join('');
+  return list.map(s=>`<div class="ispot">${s.img?`<div class="pic"><img src="${s.img}" alt="${esc(s.title)}" width="1200" height="675" loading="lazy"></div>`:''}${s.cr?`<div class="pcr">📷 ${esc(s.cr)}</div>`:''}${list.length>1||!it.title.includes(s.title.split(' ')[0])?`<h4>${esc(s.title)}</h4>`:''}<p>${esc(s.text)}</p></div>`).join('');
 }
 
 function renderChips(){const ti=todayIdx();document.getElementById('chips').innerHTML=`<div class="chip ${cur<0?'on':''}" data-i="-1"><b>🗺️ 全程</b><span>整趟地圖</span></div>`+DAYS.map((x,i)=>`<div class="chip ${i===cur?'on':''} ${i===ti?'today':''}" data-i="${i}" style="${i===cur?'':`background:color-mix(in srgb,var(--ac) ${8+i*4}%,#fff);${i>9?'color:#fff':''}`}"><b>D${x.d}</b><span>${+x.date.slice(5,7)}/${+x.date.slice(8)}（${x.w}）</span></div>`).join('');
