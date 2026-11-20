@@ -94,6 +94,7 @@ nav.tab button.on{color:var(--ac);font-weight:700}
 .tc{aspect-ratio:1/1;border:0;border-radius:12px;background:var(--card);font-size:44px;font-weight:700;cursor:pointer}
 .gmsg{text-align:center;min-height:22px;margin:10px 0 4px;font-weight:700;color:var(--ac)}
 .pad{display:grid;grid-template-columns:repeat(3,60px);gap:6px;justify-content:center;margin:6px 0 12px}
+.pad.big button{height:68px;font-size:28px;border-radius:16px}
 .pad button{height:48px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-size:18px;color:var(--tx)}
 .dgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:12px 0}
 .dg{border-radius:14px;padding:8px 10px;cursor:pointer;border:2px solid transparent;font-size:13px}
@@ -709,7 +710,7 @@ function gsheep(box){const W=360,H=480,PEN={x:110,y:14,w:140,h:86},N=8;let sh,do
 
 // ---- 瓦納卡跳傘 ----
 function gsky(box){const W=360,H=540,PY=130;let p,obj,alt,score,lives,spd,tx,best=LS.get('bestsky',0),stop=null,acc=0,inv=0;
- box.innerHTML=gHead('跳傘')+`<div style="position:relative;width:fit-content;margin:0 auto"><canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><span id="skyp" style="position:absolute;left:0;top:0;transform:translate(-50%,-50%);pointer-events:none;line-height:1">🪂</span></div><div id="gmsg" class="gmsg"></div><div class="pad" style="grid-template-columns:repeat(2,64px)"><button data-k="L">◀</button><button data-k="R">▶</button></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
+ box.innerHTML=gHead('跳傘')+`<div style="position:relative;width:fit-content;margin:0 auto"><canvas class="board" style="display:block;padding:0;touch-action:none"></canvas><span id="skyp" style="position:absolute;left:0;top:0;transform:translate(-50%,-50%);pointer-events:none;line-height:1">🪂</span></div><div id="gmsg" class="gmsg"></div><div class="pad big" style="grid-template-columns:repeat(2,minmax(0,140px));gap:12px"><button data-k="L">◀</button><button data-k="R">▶</button></div><div style="text-align:center"><button class="btn pri" id="gre">開始</button></div>`;
  const {cv,cx}=gCanvas(box,W,H);const msg=box.querySelector('#gmsg');
  gPtr(cv,W,x=>{tx=x});const mv=k=>{if(k==='L')tx=Math.max(20,tx-60);if(k==='R')tx=Math.min(W-20,tx+60)};bindPad(mv);const uk=keys(mv);
  const init=()=>{p=W/2;tx=W/2;obj=[];alt=15000;score=0;lives=3;spd=170;acc=0;inv=0;msg.textContent='左右移動：收集 ⭕ 加分，閃開 🐦';box.querySelector('#gre').textContent='重來';if(stop)stop();stop=gLoop(step)};
